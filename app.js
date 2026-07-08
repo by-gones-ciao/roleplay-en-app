@@ -2,22 +2,46 @@ const app = document.querySelector("#app");
 const toast = document.querySelector("#toast");
 
 const S = {
-  screen: "home",
+  screen: "onboardingLevel",
   topic: "일상",
   level: "초급",
   tempLevel: "초급",
   levelSheet: false,
+  onboardingLevel: "초급",
+  onboardingSpeed: "Normal (x1.0)",
   reminder: true,
-  speed: "보통",
+  speed: "Normal (x1.0)",
   turn: 0,
   mission: 0,
   hint: false,
   keyboard: false,
+  typedTurns: [],
+  feedbackOpen: null,
   reportDetail: null,
+  lessonMode: "default",
+  customLevel: "초급",
+  customScenario: {
+    topic: "",
+    userRole: "",
+    aiRole: "",
+  },
 };
 
 const topics = ["일상", "학업", "직업", "사회", "문화", "여행"];
 const levels = ["입문", "초급", "초중급", "중급", "고급"];
+const onboardingLevels = [
+  { label: "Starter", value: "입문", desc: "아주 짧은 표현부터 차근차근 연습하고 싶어요." },
+  { label: "Beginner", value: "초급", desc: "기초적인 짧은 문장은 말할 수 있어요. 회화 감각을 키우고 싶어요." },
+  { label: "Pre-Intermediate", value: "초중급", desc: "조금은 말할 수 있지만 더 자연스러워지고 싶어요." },
+  { label: "Intermediate", value: "중급", desc: "일상 대화는 어느 정도 가능해요. 좀 더 체계적으로 말해보고 싶어요." },
+  { label: "Advanced", value: "고급", desc: "대부분의 상황에서 말할 수 있어요. 더 정확하고 상세한 표현을 사용하고 싶어요." },
+];
+const speedOptions = [
+  { label: "A Little faster", value: "A Little faster (x1.2)", desc: "원어민끼리 말하는 속도예요." },
+  { label: "Normal", value: "Normal (x1.0)", desc: "평소 말하는 속도와 같아요." },
+  { label: "A Little Slow", value: "A Little Slow (x0.9)", desc: "조금 더 쉽게 들리는 속도예요." },
+  { label: "Slow", value: "Slow (x0.8)", desc: "학습하기 좋은 느린 템포예요." },
+];
 
 const scenarios = [
   { emoji: "✂️", topic: "일상", level: "초급", title: "미용실에서 원하는 머리 설명하기" },
@@ -60,6 +84,104 @@ const todayExpressions = [
     ],
   },
 ];
+
+const lessonContent = {
+  default: {
+    emoji: "✂️",
+    title: "미용실에서 원하는 머리 설명하기",
+    summary: "미용사에게 원하는 머리와 앞머리 요청을 말해 봐요.",
+    userRole: "손님",
+    aiRole: "미용사",
+    missions: ["머리를 조금 다듬고 싶다고 말하기", "앞머리를 특별히 신경 써 달라고 요청하기"],
+    words,
+    expressions: todayExpressions,
+    turns: [
+      { speaker: "ai", text: "Hello! How can I help you today?", ko: "안녕하세요. 오늘 어떻게 도와드릴까요?" },
+      { speaker: "me", text: "I'd like to trim my hair a little.", status: "perfect" },
+      { speaker: "ai", text: "Sure. How much would you like me to cut?", ko: "네. 얼마나 자르고 싶으세요?" },
+      { speaker: "me", text: "Just a little, please.", status: "better" },
+      { speaker: "ai", text: "Okay. What about your bangs?", ko: "좋아요. 앞머리는 어떻게 할까요?" },
+      { speaker: "me", text: "At the same level my eyebrows.", status: "correction" },
+    ],
+    hints: [
+      [["I'd like to trim my hair a little.", "머리를 조금 다듬고 싶어요."], ["Just a little trim, please.", "조금만 다듬어 주세요."]],
+      [["Please pay special attention to my bangs.", "앞머리를 특별히 신경 써 주세요."], ["Please be careful with my bangs.", "앞머리를 조심해서 해 주세요."]],
+    ],
+    feedback: {
+      better: { title: "더 좋은 표현", sentence: "Just a little trim, please.", note: "의미 전달은 되지만 자연스럽지 않아요." },
+      correction: { title: "교정된 문장", sentence: "At the same level as my eyebrows.", note: "전치사 사용에 주의하세요." },
+      perfect: { title: "완벽한 문장", sentence: "좋아요. 자연스럽게 전달됐어요.", note: "이 표현 그대로 사용해도 괜찮아요." },
+    },
+    report: {
+      words: "21개",
+      time: "2분 18초",
+      feedback: "오늘의 미션을 잘 완료했어요. 다음에는 <b>pay attention to</b>를 한 덩어리 표현으로 기억해 보세요.",
+      correctionWrong: "Please special attention my bangs.",
+      correctionRight: "Please pay special attention to my bangs.",
+      correctionNote: "“신경 써 주세요”는 영어로 <b>pay special attention to</b>처럼 말해요. <b>pay</b>와 <b>to</b>가 함께 필요해요.",
+    },
+  },
+  custom: {
+    emoji: "🩺",
+    title: "병원에서 증상 자세히 설명하기",
+    summary: "의사에게 어젯밤부터 시작된 몸살과 열 증상을 설명해 봐요.",
+    userRole: "환자",
+    aiRole: "의사",
+    missions: ["어디가 아픈지 말하기", "어젯밤부터 몸살과 열이 난다고 자세히 설명하기"],
+    words: [
+      { word: "symptom", meaning: "증상", example: "What symptoms do you have?", ko: "어떤 증상이 있으세요?", focus: "symptoms" },
+      { word: "fever", meaning: "열", example: "I have a fever.", ko: "열이 나요.", focus: "fever" },
+      { word: "body aches", meaning: "몸살, 몸이 쑤심", example: "I have body aches.", ko: "몸살이 있어요.", focus: "body aches" },
+      { word: "since", meaning: "...부터", example: "I've felt sick since last night.", ko: "어젯밤부터 아팠어요.", focus: "since" },
+      { word: "temperature", meaning: "체온", example: "My temperature is high.", ko: "체온이 높아요.", focus: "temperature" },
+    ],
+    expressions: [
+      {
+        pattern: "I've had~ since...",
+        meaning: "...부터 계속 ~이 있어요",
+        examples: [
+          { fixed: "I've had", variable: "a fever since last night.", ko: "어젯밤부터 열이 있어요." },
+          { fixed: "I've had", variable: "body aches since last night.", ko: "어젯밤부터 몸살이 있어요." },
+          { fixed: "I've had", variable: "these symptoms since yesterday.", ko: "어제부터 이런 증상이 있어요." },
+        ],
+      },
+      {
+        pattern: "I also feel~",
+        meaning: "또 ...한 느낌이 들어요",
+        examples: [
+          { fixed: "I also feel", variable: "chills.", ko: "오한도 느껴져요." },
+          { fixed: "I also feel", variable: "very tired.", ko: "너무 피곤해요." },
+          { fixed: "I also feel", variable: "sore all over.", ko: "온몸이 쑤셔요." },
+        ],
+      },
+    ],
+    turns: [
+      { speaker: "ai", text: "Hello. What seems to be the problem today?", ko: "안녕하세요. 오늘 어디가 불편하신가요?" },
+      { speaker: "me", text: "I have a fever and body aches.", status: "perfect" },
+      { speaker: "ai", text: "When did the symptoms start?", ko: "증상은 언제부터 시작됐나요?" },
+      { speaker: "me", text: "Since last night, I feel fever.", status: "better" },
+      { speaker: "ai", text: "Can you describe your symptoms in more detail?", ko: "증상을 조금 더 자세히 설명해 주시겠어요?" },
+      { speaker: "me", text: "I have had body aches and a fever since last night.", status: "correction" },
+    ],
+    hints: [
+      [["I have a fever and body aches.", "열과 몸살이 있어요."], ["I feel sick and achy.", "아프고 몸이 쑤셔요."]],
+      [["I've had a fever since last night.", "어젯밤부터 열이 있어요."], ["I also feel chills and body aches.", "오한과 몸살도 있어요."]],
+    ],
+    feedback: {
+      better: { title: "더 좋은 표현", sentence: "I've had a fever since last night.", note: "의미는 전달되지만 증상이 계속되는 상황에는 현재완료가 더 자연스러워요." },
+      correction: { title: "교정된 문장", sentence: "I've had body aches and a fever since last night.", note: "어젯밤부터 지금까지 이어지는 증상은 I've had로 말해요." },
+      perfect: { title: "완벽한 문장", sentence: "좋아요. 증상을 자연스럽게 전달했어요.", note: "이 표현 그대로 사용해도 괜찮아요." },
+    },
+    report: {
+      words: "24개",
+      time: "2분 34초",
+      feedback: "증상과 시작 시점을 잘 설명했어요. 다음에는 <b>I've had</b>와 <b>since last night</b>를 함께 기억해 보세요.",
+      correctionWrong: "I have had body aches and a fever since last night.",
+      correctionRight: "I've had body aches and a fever since last night.",
+      correctionNote: "증상이 과거부터 지금까지 이어질 때는 <b>I've had</b>처럼 줄여 말하면 더 자연스럽게 들려요.",
+    },
+  },
+};
 
 function notify(message) {
   toast.textContent = message;
@@ -110,6 +232,30 @@ function highlightFocus(text, focus) {
   return text.replace(new RegExp(escaped, "i"), (match) => `<span class="word-focus">${match}</span>`);
 }
 
+function escapeHtml(text) {
+  return text.replace(/[&<>"']/g, (char) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" })[char]);
+}
+
+function activeLesson() {
+  const lesson = lessonContent[S.lessonMode] || lessonContent.default;
+  if (S.lessonMode !== "custom") return lesson;
+  return {
+    ...lesson,
+    summary: S.customScenario.topic,
+    userRole: S.customScenario.userRole,
+    aiRole: S.customScenario.aiRole,
+  };
+}
+
+function renderMissions(lesson = activeLesson()) {
+  return `
+    <div class="missions">
+      <h3>오늘의 미션</h3>
+      ${lesson.missions.map((mission, index) => `<p><b>${index + 1}</b> ${mission}</p>`).join("")}
+    </div>
+  `;
+}
+
 function filteredScenarios() {
   return scenarios.filter((s) => {
     const topicOk = s.topic === S.topic;
@@ -118,21 +264,75 @@ function filteredScenarios() {
   });
 }
 
+function onboardingLevel() {
+  return `
+    <section class="screen onboarding-screen">
+      ${phoneStatus()}
+      <header class="onboarding-hero">
+        <small>TalkFlow 시작 설정</small>
+        <h1>나에게 맞는 대화로 시작해요</h1>
+      </header>
+
+      <section class="onboarding-section">
+        <h2>영어 말하기 수준을 선택해 주세요.</h2>
+        <p>난이도에 맞는 대화문을 추천해 드려요.</p>
+        <div class="choice-list level-choice-list">
+          ${onboardingLevels.map((item) => `
+            <button class="${S.onboardingLevel === item.value ? "active" : ""}" data-onboarding-level="${item.value}">
+              <span>${item.label}</span>
+              <em>${item.desc}</em>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+
+      ${dock("다음", "next-onboarding")}
+    </section>
+  `;
+}
+
+function onboardingSpeed() {
+  return `
+    <section class="screen onboarding-screen">
+      ${topbar("", { back: true })}
+      <header class="onboarding-hero">
+        <small>TalkFlow 시작 설정</small>
+        <h1>듣기 편한 속도를 골라요</h1>
+      </header>
+
+      <section class="onboarding-section">
+        <h2>영어 말하기 속도를 선택하세요.</h2>
+        <div class="choice-list speed-choice-list">
+          ${speedOptions.map((item) => `
+            <button class="${S.onboardingSpeed === item.value ? "active" : ""}" data-onboarding-speed="${item.value}">
+              <span>${item.label}<small>${item.value.match(/\(.+\)/)?.[0] || ""}</small></span>
+              <em>${item.desc}</em>
+            </button>
+          `).join("")}
+        </div>
+      </section>
+
+      ${dock("TalkFlow 시작하기", "finish-onboarding")}
+    </section>
+  `;
+}
+
 function home() {
   const cards = filteredScenarios();
   return `
     <section class="screen home-screen">
       ${phoneStatus()}
       <header class="home-title">
-        <h1>오늘의 대화</h1>
+        <h1>TalkFlow</h1>
       </header>
 
       <button class="practice-banner" data-act="today">
         <span>
-          <b>AI와 대화하며<br>안전하게 실수해 보세요</b>
-          <em>오늘의 대화 시작</em>
+          <small>AI가 추천해 주는</small>
+          <b>오늘의 대화</b>
+          <strong class="recommend-meta">${S.level} · ${S.speed}</strong>
+          <em>바로 시작 ›</em>
         </span>
-        <i>💬</i>
       </button>
 
       <section class="topics-head">
@@ -220,23 +420,30 @@ function freeView() {
   return `
     <section class="screen free-screen">
       ${topbar("나만의 시나리오", { back: true })}
-      <h2>원하는 대화를 만들어 보세요.</h2>
+      <h2>원하는 대화를 만들어 보세요</h2>
       <p class="sub">상황과 역할을 입력하면 맞춤형 대화를 할 수 있어요.</p>
+
+      <section class="custom-level-section">
+        <b>레벨 선택</b>
+        <div class="custom-level-options">
+          ${levels.map((level) => `<button class="${S.customLevel === level ? "active" : ""}" data-custom-level="${level}">${level}</button>`).join("")}
+        </div>
+      </section>
 
       <label class="field">
         <b>상황이나 주제 설명</b>
-        <button class="recommend" data-act="recommend">AI 추천</button>
-        <textarea id="custom-topic" maxlength="300" placeholder="예: 서점에서 원하는 영어책을 찾고 싶어요."></textarea>
+        <button class="recommend" data-act="recommend"><span>AI</span> 추천</button>
+        <textarea id="custom-topic" maxlength="300" placeholder="예: 식당에서 내가 주문하지 않은 음식을 가져다 줍니다. 이에 상황을 설명하고 조치를 안내 받습니다." inputmode="text">${escapeHtml(S.customScenario.topic)}</textarea>
       </label>
 
       <label class="field">
         <b>나의 역할</b>
-        <input id="custom-user" maxlength="50" placeholder="예: 손님">
+        <input id="custom-user" maxlength="50" placeholder="예: 손님" inputmode="text" autocomplete="off" value="${escapeHtml(S.customScenario.userRole)}">
       </label>
 
       <label class="field">
         <b>AI의 역할</b>
-        <input id="custom-ai" maxlength="50" placeholder="예: 서점 직원">
+        <input id="custom-ai" maxlength="50" placeholder="예: 종업원" inputmode="text" autocomplete="off" value="${escapeHtml(S.customScenario.aiRole)}">
       </label>
 
       <div class="notice">
@@ -244,34 +451,31 @@ function freeView() {
         <p>학습 목적에 맞지 않는 어휘나 내용을 입력할 경우, 시스템이 정상적으로 작동하지 않거나 이용이 제한될 수 있습니다.</p>
       </div>
 
-      ${dock("학습 시작하기", "custom-start")}
+      ${dock("입력 완료", "custom-start")}
     </section>
   `;
 }
 
-function roleBlock() {
+function roleBlock(lesson = activeLesson()) {
   return `
     <div class="role-stack">
-      <div class="role-line user-role"><span>🙂</span><small>나의 역할</small><b>손님</b></div>
-      <div class="role-line ai-role"><span>✂️</span><small>AI의 역할</small><b>미용사</b></div>
+      <div class="role-line user-role"><span>🙂</span><small>나의 역할</small><b>${escapeHtml(lesson.userRole)}</b></div>
+      <div class="role-line ai-role"><span>${lesson.emoji}</span><small>AI의 역할</small><b>${escapeHtml(lesson.aiRole)}</b></div>
     </div>
   `;
 }
 
 function intro() {
+  const lesson = activeLesson();
   return `
     <section class="screen intro-screen">
       ${topbar("", { back: true })}
-      <h2>미용실에서 원하는 머리 설명하기</h2>
-      <p class="sub">미용사에게 원하는 머리와 앞머리 요청을 말해 봐요.</p>
-      <div class="hero-emoji">✂️</div>
+      <h2>${escapeHtml(lesson.title)}</h2>
+      <p class="sub">${escapeHtml(lesson.summary)}</p>
+      <div class="hero-emoji">${lesson.emoji}</div>
       <div class="white-card">
-        ${roleBlock()}
-        <div class="missions">
-          <h3>오늘의 미션</h3>
-          <p><b>1</b> 머리를 조금 다듬고 싶다고 말하기</p>
-          <p><b>2</b> 앞머리를 특별히 신경 써 달라고 요청하기</p>
-        </div>
+        ${roleBlock(lesson)}
+        ${renderMissions(lesson)}
       </div>
       ${dock("학습 시작하기", "words")}
     </section>
@@ -279,12 +483,13 @@ function intro() {
 }
 
 function wordView() {
+  const lesson = activeLesson();
   return `
     <section class="screen learn-screen">
       ${topbar("오늘의 단어", { back: true })}
       ${progress(2)}
       <div class="learn-list">
-        ${words.map((w, index) => `
+        ${lesson.words.map((w, index) => `
           <article class="learn-card">
             <div class="word-main">
               <button class="mini-sound" data-speak="${w.word}" aria-label="${w.word} 듣기">▶</button>
@@ -308,12 +513,13 @@ function wordView() {
 }
 
 function exprView() {
+  const lesson = activeLesson();
   return `
     <section class="screen learn-screen">
       ${topbar("오늘의 표현", { back: true })}
       ${progress(3)}
       <div class="today-expression-list">
-        ${todayExpressions.map((item, patternIndex) => `
+        ${lesson.expressions.map((item, patternIndex) => `
           <article class="pattern-card">
             <div class="pattern-head">
               <button class="mini-sound" data-speak="${item.pattern}" aria-label="표현 듣기">▶</button>
@@ -344,7 +550,7 @@ function exprView() {
 }
 
 function reportExpressionList() {
-  return todayExpressions.map((item) => `
+  return activeLesson().expressions.map((item) => `
         <article class="pattern-card">
           <div class="pattern-head">
             <div>
@@ -356,6 +562,7 @@ function reportExpressionList() {
       `).join("")}
 
 function ready() {
+  const lesson = activeLesson();
   return `
     <section class="screen ready-screen">
       ${topbar("오늘의 대화", { back: true })}
@@ -363,12 +570,8 @@ function ready() {
       <h2>이제 직접 말해 보세요</h2>
       <p class="sub">틀려도 괜찮아요. AI가 대화를 이어갈게요.</p>
       <div class="white-card">
-        ${roleBlock()}
-        <div class="missions">
-          <h3>오늘의 미션</h3>
-          <p><b>1</b> 머리를 조금 다듬고 싶다고 말하기</p>
-          <p><b>2</b> 앞머리를 특별히 신경 써 달라고 요청하기</p>
-        </div>
+        ${roleBlock(lesson)}
+        ${renderMissions(lesson)}
       </div>
       <div class="tip"><b>💡 말이 떠오르지 않나요?</b><br>힌트를 누르면 바로 말할 수 있는 쉬운 답변 두 개를 보여드려요.</div>
       ${dock("대화 시작하기", "start")}
@@ -376,27 +579,73 @@ function ready() {
   `;
 }
 
-function turns() {
-  const list = [["ai", "Hello! How can I help you today?", "안녕하세요. 오늘 어떻게 도와드릴까요?"]];
-  if (S.turn > 0) list.push(["me", "I'd like to trim my hair a little.", "머리를 조금 다듬고 싶어요."]);
-  if (S.turn > 0) list.push(["ai", "Sure. How much would you like me to cut?", "네. 얼마나 자르고 싶으세요?"]);
-  if (S.turn > 1) list.push(["me", "Just a little, please.", "조금만 해 주세요."]);
-  if (S.turn > 1) list.push(["ai", "Okay. What about your bangs?", "좋아요. 앞머리는 어떻게 할까요?"]);
-  if (S.turn > 2) list.push(["me", "Please special attention my bangs.", "교정이 필요한 문장이에요."]);
+function turns(options = {}) {
+  const lesson = activeLesson();
+  const showUserFeedback = options.showUserFeedback !== false;
+  const showRetry = options.showRetry !== false;
+  const showAiTools = options.showAiTools !== false;
+  const list = [];
+  let meIndex = 0;
+  lesson.turns.forEach((turn) => {
+    if (turn.speaker === "ai") {
+      if (meIndex <= S.turn) list.push(turn);
+      return;
+    }
+    if (S.turn > meIndex) {
+      list.push({ ...turn, text: S.typedTurns[meIndex] || turn.text, meIndex });
+    }
+    meIndex += 1;
+  });
   return list.map((t, i) => `
-    <div class="chat-row ${t[0]}">
-      <small>${t[0] === "ai" ? "AI · 미용사" : "나 · 손님"}</small>
-      <p>${t[1]}</p>
-      ${t[0] === "ai" ? `<div class="chat-tools"><button data-speak="${t[1]}">🔊</button><button data-translation="l${i}">🌐</button></div><em id="translation-l${i}" class="translation hidden">${t[2]}</em>` : `<em class="translation">${t[2]}</em>`}
+    <div class="chat-row ${t.speaker}">
+      <div class="bubble-line">
+        ${t.speaker === "me" && showUserFeedback ? feedbackIcon(t.status, t.meIndex) : ""}
+        <p>${escapeHtml(t.text)}</p>
+        ${t.speaker === "me" && showRetry ? `<button class="retry-turn-btn" data-act="retry-turn" data-turn="${i}" aria-label="다시 녹음">↻</button>` : ""}
+      </div>
+      ${t.speaker === "me" && showUserFeedback && S.feedbackOpen === t.meIndex ? feedbackPanel(t.status) : ""}
+      ${t.speaker === "ai" && showAiTools ? `<div class="chat-tools"><button data-speak="${t.text}">🔊</button><button data-translation="l${i}">🌐</button></div><em id="translation-l${i}" class="translation hidden">${t.ko}</em>` : ""}
     </div>
   `).join("");
 }
 
+function feedbackIcon(status, meIndex) {
+  const labels = {
+    perfect: "완벽한 문장",
+    better: "더 좋은 표현 제안",
+    correction: "교정이 필요한 문장",
+  };
+  const symbols = {
+    perfect: "✓",
+    better: "🫴",
+    correction: "!",
+  };
+  if (status === "perfect") {
+    return `<span class="feedback-icon ${status}" aria-label="${labels[status]}">${symbols[status]}</span>`;
+  }
+  return `<button class="feedback-icon ${status}" data-act="feedback" data-feedback="${meIndex}" aria-label="${labels[status]}">${symbols[status]}</button>`;
+}
+
+function feedbackPanel(status) {
+  const feedback = activeLesson().feedback[status];
+  return `
+    <article class="inline-feedback ${status}">
+      <p>${feedback.note}</p>
+      <hr>
+      <small>${feedback.title}</small>
+      <b>${feedback.sentence}</b>
+    </article>
+  `;
+}
+
+function currentAiPrompt() {
+  const prompt = activeLesson().turns.filter((turn) => turn.speaker === "ai")[S.turn];
+  return [prompt?.text || "", prompt?.ko || ""];
+}
+
 function hintSheet() {
   if (!S.hint) return "";
-  const hints = S.turn < 2
-    ? [["I'd like to trim my hair a little.", "머리를 조금 다듬고 싶어요."], ["Just a little trim, please.", "조금만 다듬어 주세요."]]
-    : [["Please pay special attention to my bangs.", "앞머리를 특별히 신경 써 주세요."], ["Please be careful with my bangs.", "앞머리를 조심해서 해 주세요."]];
+  const hints = activeLesson().hints[S.turn < 2 ? 0 : 1];
   return `
     <div class="backdrop" data-act="close">
       <div class="sheet" data-stop>
@@ -410,20 +659,37 @@ function hintSheet() {
   `;
 }
 
-function live() {
+function keyboardComposer() {
+  if (!S.keyboard) return "";
   return `
-    <section class="screen live-screen">
+    <div class="keyboard-composer" data-stop>
+      <div class="keyboard-entry">
+        <input id="keyboard-text" maxlength="180" placeholder="여기에 입력하세요." inputmode="text" enterkeyhint="send" autocomplete="off" autofocus>
+        <button class="send-btn" data-act="submit-keyboard" aria-label="보내기">➤</button>
+      </div>
+      <button class="close-keyboard-btn" data-act="close-keyboard" aria-label="닫기">×</button>
+    </div>
+  `;
+}
+
+function live() {
+  const lesson = activeLesson();
+  const totalMissions = lesson.missions.length;
+  return `
+    <section class="screen live-screen ${S.keyboard ? "typing-mode" : ""}">
       ${topbar("오늘의 대화", { back: true })}
       <div class="live-mission-panel">
-        <div class="mission-count">오늘의 미션 <b>${S.mission}/2 완료</b></div>
-        <div class="mission-bar"><i style="width:${(S.mission / 2) * 100}%"></i></div>
+        <div class="mission-count">오늘의 미션 <b>${S.mission}/${totalMissions} 완료</b></div>
+        <div class="mission-bar"><i style="width:${(S.mission / totalMissions) * 100}%"></i></div>
         <div class="live-mission-list">
-          <p class="${S.mission > 0 ? "done" : ""}"><span>${S.mission > 0 ? "✓" : "1"}</span> 머리를 조금 다듬고 싶다고 말하기</p>
-          <p class="${S.mission > 1 ? "done" : ""}"><span>${S.mission > 1 ? "✓" : "2"}</span> 앞머리를 특별히 신경 써 달라고 요청하기</p>
+          ${lesson.missions.map((mission, index) => `
+            <p class="${S.mission > index ? "done" : ""}"><span>${S.mission > index ? "✓" : index + 1}</span> ${mission}</p>
+          `).join("")}
         </div>
       </div>
       <div class="chat live-chat">${turns()}</div>
-      <div class="input">
+      <div class="input ${S.keyboard ? "typing" : ""}">
+        ${keyboardComposer()}
         <button class="keyboard-btn" data-act="keyboard" aria-label="키보드 입력">⌨️</button>
         <button class="mic-main-btn" data-act="mic" aria-label="마이크로 말하기">🎙️</button>
         <button class="hint-icon-btn" data-act="hint" aria-label="힌트 보기">💡</button>
@@ -434,27 +700,22 @@ function live() {
 }
 
 function report() {
+  const lesson = activeLesson();
   return `
     <section class="screen report-screen">
       ${topbar("학습 리포트")}
-      <h2 class="report-title">미용실에서 원하는 머리 설명하기</h2>
+      <h2 class="report-title">${escapeHtml(lesson.title)}</h2>
       <div class="report-metrics">
-        <div class="metric-card"><small>말한 단어</small><b>21개</b></div>
-        <div class="metric-card"><small>대화 시간</small><b>2분 18초</b></div>
-      </div>
-      <div class="mission-eval-card">
-        <div>
-          <small>미션 평가</small>
-          <b>2/2 완료</b>
-        </div>
-        <p>머리를 조금 다듬고 싶다는 요청과 앞머리를 신경 써 달라는 요청을 모두 전달했어요.</p>
+        <div class="metric-card"><small>말한 단어</small><b>${lesson.report.words}</b></div>
+        <div class="metric-card"><small>대화 시간</small><b>${lesson.report.time}</b></div>
+        <div class="metric-card"><small>미션 평가</small><b>${lesson.missions.length}/${lesson.missions.length}</b></div>
       </div>
       <button class="menu-row" data-report-detail="corrections">교정 문장 <b>1개</b><span>›</span></button>
       <button class="menu-row" data-report-detail="better">더 좋은 표현 문장 <b>0개</b><span>›</span></button>
       <button class="menu-row" data-report-detail="conversation">전체 대화 내용 보기 <span>›</span></button>
       <div class="feedback-card">
         <b>AI 피드백</b>
-        <p>오늘의 미션을 잘 완료했어요. 다음에는 <b>pay attention to</b>를 한 덩어리 표현으로 기억해 보세요.</p>
+        <p>${lesson.report.feedback}</p>
       </div>
       ${dock("학습 완료", "home")}
     </section>
@@ -462,16 +723,17 @@ function report() {
 }
 
 function reportDetail() {
+  const lesson = activeLesson();
   const data = {
     corrections: {
       title: "교정 문장",
       body: `
         <article class="detail-card">
           <small>내가 말한 문장</small>
-          <p class="wrong-sentence">Please special attention my bangs.</p>
+          <p class="wrong-sentence">${escapeHtml(lesson.report.correctionWrong)}</p>
           <small>교정 문장</small>
-          <p class="correct-sentence">Please pay special attention to my bangs.</p>
-          <div class="detail-note">“신경 써 주세요”는 영어로 <b>pay special attention to</b>처럼 말해요. <b>pay</b>와 <b>to</b>가 함께 필요해요.</div>
+          <p class="correct-sentence">${escapeHtml(lesson.report.correctionRight)}</p>
+          <div class="detail-note">${lesson.report.correctionNote}</div>
         </article>
       `,
     },
@@ -487,13 +749,8 @@ function reportDetail() {
     conversation: {
       title: "전체 대화 내용",
       body: `
-        <div class="report-conversation">
-          <div class="report-line ai"><small>AI · 미용사</small><p>Hello! How can I help you today?</p><em>안녕하세요. 오늘 어떻게 도와드릴까요?</em></div>
-          <div class="report-line me"><small>나 · 손님</small><p>I'd like to trim my hair a little.</p><em>머리를 조금 다듬고 싶어요.</em></div>
-          <div class="report-line ai"><small>AI · 미용사</small><p>Sure. How much would you like me to cut?</p><em>네. 얼마나 자르고 싶으세요?</em></div>
-          <div class="report-line me"><small>나 · 손님</small><p>Just a little, please.</p><em>조금만 해 주세요.</em></div>
-          <div class="report-line ai"><small>AI · 미용사</small><p>Okay. What about your bangs?</p><em>좋아요. 앞머리는 어떻게 할까요?</em></div>
-          <div class="report-line me needs-correction"><small>나 · 손님</small><p>Please special attention my bangs.</p><em>교정: Please pay special attention to my bangs.</em></div>
+        <div class="chat report-chat">
+          ${turns({ showUserFeedback: false, showRetry: false, showAiTools: false })}
         </div>
       `,
     },
@@ -507,7 +764,7 @@ function reportDetail() {
   `;
 }
 
-const views = { home, profile, free: freeView, intro, words: wordView, expressions: exprView, ready, live, report, reportDetail };
+const views = { onboardingLevel, onboardingSpeed, home, profile, free: freeView, intro, words: wordView, expressions: exprView, ready, live, report, reportDetail };
 
 function render() {
   app.innerHTML = views[S.screen]();
@@ -518,11 +775,24 @@ function go(screen) {
   S.screen = screen;
   S.levelSheet = false;
   S.hint = false;
+  S.keyboard = false;
   render();
 }
 
+function submitUserTurn(text = "") {
+  const cleaned = text.trim();
+  if (cleaned) S.typedTurns[S.turn] = cleaned;
+  S.turn += 1;
+  if (S.turn === 1) S.mission = 1;
+  if (S.turn >= 3) S.mission = activeLesson().missions.length;
+  S.keyboard = false;
+  S.feedbackOpen = null;
+  if (S.turn > 3) go("report");
+  else render();
+}
+
 function back() {
-  const map = { free: "home", intro: "home", words: "intro", expressions: "words", ready: "expressions", live: "ready", profile: "home", reportDetail: "report" };
+  const map = { onboardingSpeed: "onboardingLevel", free: "home", intro: "home", words: "intro", expressions: "words", ready: "expressions", live: "ready", profile: "home", reportDetail: "report" };
   go(map[S.screen] || "home");
 }
 
@@ -543,6 +813,27 @@ app.addEventListener("click", (e) => {
     return;
   }
 
+  const onboardingLevel = e.target.closest("[data-onboarding-level]");
+  if (onboardingLevel) {
+    S.onboardingLevel = onboardingLevel.dataset.onboardingLevel;
+    render();
+    return;
+  }
+
+  const onboardingSpeed = e.target.closest("[data-onboarding-speed]");
+  if (onboardingSpeed) {
+    S.onboardingSpeed = onboardingSpeed.dataset.onboardingSpeed;
+    render();
+    return;
+  }
+
+  const customLevel = e.target.closest("[data-custom-level]");
+  if (customLevel) {
+    S.customLevel = customLevel.dataset.customLevel;
+    render();
+    return;
+  }
+
   const translation = e.target.closest("[data-translation]");
   if (translation) {
     document.querySelector(`#translation-${translation.dataset.translation}`)?.classList.toggle("hidden");
@@ -556,6 +847,24 @@ app.addEventListener("click", (e) => {
     return;
   }
 
+  const field = e.target.closest(".field");
+  if (field && !e.target.closest("button")) {
+    field.querySelector("textarea, input")?.focus();
+  }
+
+  const keyboardEntry = e.target.closest(".keyboard-entry");
+  if (keyboardEntry && !e.target.closest("button")) {
+    keyboardEntry.querySelector("#keyboard-text")?.focus();
+  }
+
+  const inputBar = e.target.closest(".input");
+  if (inputBar && S.screen === "live" && !S.keyboard && !e.target.closest("button")) {
+    S.keyboard = true;
+    render();
+    setTimeout(() => document.querySelector("#keyboard-text")?.focus(), 0);
+    return;
+  }
+
   const speak = e.target.closest("[data-speak]");
   if (speak) {
     notify(`듣기: ${speak.dataset.speak}`);
@@ -565,8 +874,23 @@ app.addEventListener("click", (e) => {
   const action = e.target.closest("[data-act]")?.dataset.act;
   if (!action) return;
 
-  if (["home", "profile", "free", "intro", "words", "expressions", "ready"].includes(action)) go(action);
+  if (["home", "profile", "free", "words", "expressions", "ready"].includes(action)) go(action);
+  else if (action === "next-onboarding") {
+    go("onboardingSpeed");
+  }
+  else if (action === "finish-onboarding") {
+    S.level = S.onboardingLevel;
+    S.tempLevel = S.onboardingLevel;
+    S.speed = S.onboardingSpeed;
+    notify("맞춤 추천 설정이 저장되었어요.");
+    setTimeout(() => go("home"), 500);
+  }
+  else if (action === "intro") {
+    S.lessonMode = "default";
+    go("intro");
+  }
   else if (action === "today") {
+    S.lessonMode = "default";
     notify("AI가 오늘의 대화를 골랐어요.");
     setTimeout(() => go("intro"), 500);
   } else if (action === "level-sheet") {
@@ -575,6 +899,7 @@ app.addEventListener("click", (e) => {
     render();
   } else if (action === "confirm-level") {
     S.level = S.tempLevel;
+    S.onboardingLevel = S.tempLevel;
     S.levelSheet = false;
     render();
   } else if (action === "close-sheet") {
@@ -586,18 +911,32 @@ app.addEventListener("click", (e) => {
     document.querySelector("#custom-ai").value = "의사";
     notify("AI 추천 내용이 입력되었어요.");
   } else if (action === "custom-start") {
-    notify("추천한 내용으로 오늘의 대화를 시작해요.");
-    setTimeout(() => go("live"), 500);
+    const topicValue = document.querySelector("#custom-topic")?.value.trim() || "";
+    const userRoleValue = document.querySelector("#custom-user")?.value.trim() || "";
+    const aiRoleValue = document.querySelector("#custom-ai")?.value.trim() || "";
+    if (!topicValue || !userRoleValue || !aiRoleValue) {
+      notify("상황과 역할을 모두 입력해 주세요.");
+      return;
+    }
+    S.lessonMode = "custom";
+    S.customScenario = {
+      topic: topicValue,
+      userRole: userRoleValue,
+      aiRole: aiRoleValue,
+    };
+    S.turn = 0;
+    S.mission = 0;
+    S.typedTurns = [];
+    S.feedbackOpen = null;
+    notify("입력한 내용으로 학습을 만들었어요.");
+    setTimeout(() => go("intro"), 500);
   } else if (action === "start") {
     S.turn = 0;
     S.mission = 0;
+    S.typedTurns = [];
     go("live");
   } else if (action === "mic") {
-    S.turn += 1;
-    if (S.turn === 1) S.mission = 1;
-    if (S.turn >= 3) S.mission = 2;
-    if (S.turn > 3) go("report");
-    else render();
+    submitUserTurn();
   } else if (action === "hint") {
     S.hint = true;
     render();
@@ -605,13 +944,42 @@ app.addEventListener("click", (e) => {
     S.hint = false;
     render();
   } else if (action === "keyboard") {
-    notify("키보드 입력은 다음 단계에서 연결할 예정이에요.");
+    S.keyboard = true;
+    render();
+    setTimeout(() => document.querySelector("#keyboard-text")?.focus(), 0);
+  } else if (action === "feedback") {
+    const next = Number(e.target.closest("[data-feedback]")?.dataset.feedback);
+    S.feedbackOpen = S.feedbackOpen === next ? null : next;
+    render();
+  } else if (action === "retry-turn") {
+    const meRowsBeforeButton = [...document.querySelectorAll(".retry-turn-btn")].indexOf(e.target.closest(".retry-turn-btn"));
+    if (meRowsBeforeButton >= 0) {
+      S.turn = meRowsBeforeButton;
+      S.typedTurns = S.typedTurns.slice(0, meRowsBeforeButton);
+      S.mission = meRowsBeforeButton === 0 ? 0 : 1;
+      S.feedbackOpen = null;
+      S.keyboard = true;
+      render();
+      setTimeout(() => document.querySelector("#keyboard-text")?.focus(), 0);
+    }
+  } else if (action === "close-keyboard") {
+    S.keyboard = false;
+    render();
+  } else if (action === "submit-keyboard") {
+    const value = document.querySelector("#keyboard-text")?.value || "";
+    if (!value.trim()) {
+      notify("영어 문장을 입력해 주세요.");
+      return;
+    }
+    submitUserTurn(value);
   } else if (action === "finish") {
     S.turn = 3;
     S.mission = 2;
     go("report");
   } else if (action === "speed") {
-    S.speed = S.speed === "보통" ? "천천히" : S.speed === "천천히" ? "빠르게" : "보통";
+    const currentIndex = speedOptions.findIndex((item) => item.value === S.speed);
+    S.speed = speedOptions[(currentIndex + 1) % speedOptions.length].value;
+    S.onboardingSpeed = S.speed;
     render();
   } else if (action === "reminder") {
     S.reminder = !S.reminder;
@@ -619,6 +987,17 @@ app.addEventListener("click", (e) => {
   } else if (action === "soon") {
     notify("이 대화는 곧 추가될 예정이에요.");
   } else if (action === "back") back();
+});
+
+app.addEventListener("keydown", (e) => {
+  if (e.key !== "Enter" || e.target?.id !== "keyboard-text") return;
+  e.preventDefault();
+  const value = e.target.value || "";
+  if (!value.trim()) {
+    notify("영어 문장을 입력해 주세요.");
+    return;
+  }
+  submitUserTurn(value);
 });
 
 render();
