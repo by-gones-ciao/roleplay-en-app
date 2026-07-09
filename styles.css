@@ -103,6 +103,14 @@ button {
   font-weight: 900;
 }
 
+.topbar-left {
+  grid-template-columns: 42px 1fr 42px;
+}
+
+.topbar-left h1 {
+  text-align: left;
+}
+
 .icon-btn,
 .icon-space {
   width: 42px;
@@ -178,7 +186,11 @@ button {
 }
 
 .onboarding-section {
-  margin-top: 20px;
+  margin-top: 18px;
+}
+
+.level-onboarding-section {
+  margin-top: 72px;
 }
 
 .onboarding-section h2 {
@@ -191,9 +203,11 @@ button {
 }
 
 .onboarding-section > p {
-  margin: 0 0 12px;
+  margin: 0 0 22px;
   color: var(--muted);
-  font-size: 13px;
+  font-size: 12px;
+  font-weight: 700;
+  white-space: nowrap;
 }
 
 .choice-list {
@@ -242,12 +256,13 @@ button {
 }
 
 .speed-choice-list {
-  grid-template-columns: 1fr 1fr;
-  gap: 8px;
+  grid-template-columns: 1fr;
+  gap: 9px;
+  margin-top: 22px;
 }
 
 .speed-choice-list button {
-  min-height: 104px;
+  min-height: auto;
 }
 
 .practice-banner span {
@@ -684,6 +699,8 @@ button {
   position: sticky;
   bottom: 0;
   z-index: 8;
+  display: grid;
+  gap: 10px;
   margin: 18px -22px -96px;
   padding: 16px 22px 22px;
   background: linear-gradient(0deg, var(--surface) 72%, transparent);
@@ -831,6 +848,14 @@ button {
 .learn-list {
   display: grid;
   gap: 11px;
+}
+
+.learn-subtitle {
+  margin: -3px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
 }
 
 .learn-card,
@@ -1317,6 +1342,80 @@ button.feedback-icon {
   background: linear-gradient(180deg, #fffdf8, #f2fbf5);
 }
 
+.ready-subtitle {
+  margin: -3px 0 12px;
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.ready-screen .ready-prompt {
+  margin: 34px 0 16px;
+  font-size: 18px;
+  line-height: 1.35;
+  text-align: left;
+  white-space: nowrap;
+}
+
+.reminder-mission-card {
+  margin-top: 0;
+  padding: 12px 14px;
+  border-color: rgba(15, 68, 58, 0.1);
+  background: rgba(255, 255, 255, 0.58);
+  box-shadow: 0 8px 18px rgba(18, 74, 60, 0.08);
+}
+
+.ready-screen .white-card .missions {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
+}
+
+.ready-screen .missions h3 {
+  margin-bottom: 7px;
+  font-size: 15px;
+}
+
+.ready-screen .missions p {
+  margin: 5px 0;
+  font-size: 13px;
+  line-height: 1.36;
+}
+
+.ready-screen .missions p b {
+  width: 21px;
+  height: 21px;
+  margin-right: 7px;
+  border-radius: 7px;
+  font-size: 11px;
+}
+
+.turn-guide {
+  margin: 14px 0 0;
+  padding: 11px 13px;
+  border: 1px solid rgba(15, 68, 58, 0.1);
+  border-radius: 16px;
+  background: rgba(223, 241, 234, 0.72);
+  color: #315f4b;
+}
+
+.turn-guide p {
+  margin: 0;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.turn-guide p + p {
+  margin-top: 3px;
+}
+
+.ready-screen .dock {
+  margin: 16px -22px -82px;
+  padding-bottom: 42px;
+}
+
 .live-screen {
   background: #fbf8ef;
   padding-bottom: 118px;
@@ -1339,30 +1438,22 @@ button.feedback-icon {
   backdrop-filter: blur(12px);
 }
 
-.mission-count {
+.conversation-context {
+  margin: 0 0 11px;
   display: flex;
+  align-items: center;
   justify-content: space-between;
-  margin-top: 0;
-  color: var(--muted);
-  font-size: 13px;
-}
-
-.mission-count b {
+  gap: 10px;
   color: var(--ink);
+  font-size: 13px;
+  font-weight: 900;
 }
 
-.mission-bar {
-  height: 5px;
-  margin: 9px 0 12px;
-  border-radius: 999px;
-  background: #cfe7dd;
+.conversation-context span {
+  min-width: 0;
   overflow: hidden;
-}
-
-.mission-bar i {
-  display: block;
-  height: 100%;
-  background: var(--ink);
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .live-mission-list {
@@ -1402,6 +1493,16 @@ button.feedback-icon {
   color: white;
 }
 
+.conversation-guidance {
+  margin: 10px 0 0;
+  padding-top: 9px;
+  border-top: 1px solid rgba(15, 68, 58, 0.1);
+  color: #4f7467;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.4;
+}
+
 .live-chat {
   padding-bottom: 18px;
 }
@@ -1420,6 +1521,45 @@ button.feedback-icon {
   border-top: 1px solid var(--line);
   box-shadow: 0 -12px 28px rgba(23, 34, 31, 0.06);
   cursor: pointer;
+}
+
+.end-choice-panel {
+  position: sticky;
+  bottom: 0;
+  z-index: 8;
+  margin: 0 -22px -118px;
+  padding: 14px 22px 24px;
+  display: grid;
+  gap: 10px;
+  background: linear-gradient(180deg, rgba(251, 248, 239, 0.2), #fbf8ef 28%);
+}
+
+.close-live-btn {
+  color: var(--ink);
+  font-size: 24px;
+  font-weight: 800;
+}
+
+.exit-confirm-sheet {
+  display: grid;
+  gap: 10px;
+}
+
+.exit-confirm-sheet h2 {
+  margin-bottom: 10px;
+  font-size: 22px;
+}
+
+.end-choice-panel p {
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid #ccefdc;
+  border-radius: 18px;
+  background: white;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 800;
+  line-height: 1.45;
 }
 
 .input.typing {
@@ -1545,20 +1685,21 @@ button.feedback-icon {
 }
 
 .report-title {
+  margin-top: 22px !important;
+  margin-bottom: 18px !important;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  font-size: 22px !important;
+  font-size: 18px !important;
   letter-spacing: 0;
-  margin-bottom: 16px !important;
 }
 
 .report-metrics {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 8px;
-  margin: 16px 0 14px;
+  margin: 18px 0 16px;
 }
 
 .metric-card {

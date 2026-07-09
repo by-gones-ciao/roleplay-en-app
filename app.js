@@ -19,6 +19,10 @@ const S = {
   feedbackOpen: null,
   reportDetail: null,
   lessonMode: "default",
+  liveEntry: "flow",
+  continueConversation: false,
+  finalizingConversation: false,
+  exitConfirm: false,
   customLevel: "초급",
   customScenario: {
     topic: "",
@@ -30,11 +34,11 @@ const S = {
 const topics = ["일상", "학업", "직업", "사회", "문화", "여행"];
 const levels = ["입문", "초급", "초중급", "중급", "고급"];
 const onboardingLevels = [
-  { label: "Starter", value: "입문", desc: "아주 짧은 표현부터 차근차근 연습하고 싶어요." },
-  { label: "Beginner", value: "초급", desc: "기초적인 짧은 문장은 말할 수 있어요. 회화 감각을 키우고 싶어요." },
-  { label: "Pre-Intermediate", value: "초중급", desc: "조금은 말할 수 있지만 더 자연스러워지고 싶어요." },
-  { label: "Intermediate", value: "중급", desc: "일상 대화는 어느 정도 가능해요. 좀 더 체계적으로 말해보고 싶어요." },
-  { label: "Advanced", value: "고급", desc: "대부분의 상황에서 말할 수 있어요. 더 정확하고 상세한 표현을 사용하고 싶어요." },
+  { label: "Starter(입문)", value: "입문", desc: "아주 짧은 표현부터 차근차근 연습하고 싶어요." },
+  { label: "Beginner(초급)", value: "초급", desc: "기초적인 짧은 문장은 말할 수 있어요. 회화 감각을 키우고 싶어요." },
+  { label: "Pre-Intermediate(초중급)", value: "초중급", desc: "조금은 말할 수 있지만 더 자연스러워지고 싶어요." },
+  { label: "Intermediate(중급)", value: "중급", desc: "일상 대화는 어느 정도 가능해요. 좀 더 체계적으로 말해보고 싶어요." },
+  { label: "Advanced(고급)", value: "고급", desc: "대부분의 상황에서 말할 수 있어요. 더 정확하고 상세한 표현을 사용하고 싶어요." },
 ];
 const speedOptions = [
   { label: "A Little faster", value: "A Little faster (x1.2)", desc: "원어민끼리 말하는 속도예요." },
@@ -109,7 +113,7 @@ const lessonContent = {
     ],
     feedback: {
       better: { title: "더 좋은 표현", sentence: "Just a little trim, please.", note: "의미 전달은 되지만 자연스럽지 않아요." },
-      correction: { title: "교정된 문장", sentence: "At the same level as my eyebrows.", note: "전치사 사용에 주의하세요." },
+      correction: { title: "교정 문장", sentence: "At the same level as my eyebrows.", note: "전치사 사용에 주의하세요." },
       perfect: { title: "완벽한 문장", sentence: "좋아요. 자연스럽게 전달됐어요.", note: "이 표현 그대로 사용해도 괜찮아요." },
     },
     report: {
@@ -161,7 +165,7 @@ const lessonContent = {
       { speaker: "ai", text: "When did the symptoms start?", ko: "증상은 언제부터 시작됐나요?" },
       { speaker: "me", text: "Since last night, I feel fever.", status: "better" },
       { speaker: "ai", text: "Can you describe your symptoms in more detail?", ko: "증상을 조금 더 자세히 설명해 주시겠어요?" },
-      { speaker: "me", text: "I have had body aches and a fever since last night.", status: "correction" },
+      { speaker: "me", text: "I have body aches and a fever since last night.", status: "correction" },
     ],
     hints: [
       [["I have a fever and body aches.", "열과 몸살이 있어요."], ["I feel sick and achy.", "아프고 몸이 쑤셔요."]],
@@ -169,16 +173,16 @@ const lessonContent = {
     ],
     feedback: {
       better: { title: "더 좋은 표현", sentence: "I've had a fever since last night.", note: "의미는 전달되지만 증상이 계속되는 상황에는 현재완료가 더 자연스러워요." },
-      correction: { title: "교정된 문장", sentence: "I've had body aches and a fever since last night.", note: "어젯밤부터 지금까지 이어지는 증상은 I've had로 말해요." },
+      correction: { title: "교정 문장", sentence: "I've[=I have] had body aches and a fever since last night.", note: "어젯밤부터 지금까지 이어지는 증상은 현재완료 have had로 말해요." },
       perfect: { title: "완벽한 문장", sentence: "좋아요. 증상을 자연스럽게 전달했어요.", note: "이 표현 그대로 사용해도 괜찮아요." },
     },
     report: {
       words: "24개",
       time: "2분 34초",
       feedback: "증상과 시작 시점을 잘 설명했어요. 다음에는 <b>I've had</b>와 <b>since last night</b>를 함께 기억해 보세요.",
-      correctionWrong: "I have had body aches and a fever since last night.",
-      correctionRight: "I've had body aches and a fever since last night.",
-      correctionNote: "증상이 과거부터 지금까지 이어질 때는 <b>I've had</b>처럼 줄여 말하면 더 자연스럽게 들려요.",
+      correctionWrong: "I have body aches and a fever since last night.",
+      correctionRight: "I've[=I have] had body aches and a fever since last night.",
+      correctionNote: "증상이 과거부터 지금까지 이어질 때는 현재완료 <b>have had</b>를 쓰면 자연스러워요.",
     },
   },
 };
@@ -196,12 +200,14 @@ function phoneStatus() {
 
 function topbar(title, options = {}) {
   const back = options.back ? `<button class="icon-btn" data-act="back" aria-label="뒤로">‹</button>` : `<span class="icon-space"></span>`;
+  const alignClass = options.align === "left" ? " topbar-left" : "";
+  const right = options.right || `<span class="icon-space"></span>`;
   return `
     ${phoneStatus()}
-    <header class="topbar">
+    <header class="topbar${alignClass}">
       ${back}
       <h1>${title}</h1>
-      <span class="icon-space"></span>
+      ${right}
     </header>
   `;
 }
@@ -213,7 +219,7 @@ function bottomNav(active = "home") {
         <span>⌂</span><b>홈</b>
       </button>
       <button class="${active === "profile" ? "active" : ""}" data-act="profile">
-        <span>☺</span><b>프로필</b>
+        <span>☺</span><b>마이 페이지</b>
       </button>
     </nav>
   `;
@@ -268,14 +274,10 @@ function onboardingLevel() {
   return `
     <section class="screen onboarding-screen">
       ${phoneStatus()}
-      <header class="onboarding-hero">
-        <small>TalkFlow 시작 설정</small>
-        <h1>나에게 맞는 대화로 시작해요</h1>
-      </header>
 
-      <section class="onboarding-section">
+      <section class="onboarding-section level-onboarding-section">
         <h2>영어 말하기 수준을 선택해 주세요.</h2>
-        <p>난이도에 맞는 대화문을 추천해 드려요.</p>
+        <p>나중에 바꿀 수 있으니 편하게 선택해 주세요.</p>
         <div class="choice-list level-choice-list">
           ${onboardingLevels.map((item) => `
             <button class="${S.onboardingLevel === item.value ? "active" : ""}" data-onboarding-level="${item.value}">
@@ -295,10 +297,6 @@ function onboardingSpeed() {
   return `
     <section class="screen onboarding-screen">
       ${topbar("", { back: true })}
-      <header class="onboarding-hero">
-        <small>TalkFlow 시작 설정</small>
-        <h1>듣기 편한 속도를 골라요</h1>
-      </header>
 
       <section class="onboarding-section">
         <h2>영어 말하기 속도를 선택하세요.</h2>
@@ -330,7 +328,6 @@ function home() {
         <span>
           <small>AI가 추천해 주는</small>
           <b>오늘의 대화</b>
-          <strong class="recommend-meta">${S.level} · ${S.speed}</strong>
           <em>바로 시작 ›</em>
         </span>
       </button>
@@ -393,7 +390,7 @@ function levelSheet() {
 function profile() {
   return `
     <section class="screen profile-screen">
-      ${topbar("프로필")}
+      ${topbar("마이 페이지")}
       <div class="profile-card">
         <div class="profile-avatar">☺</div>
         <h2>나의 학습 설정</h2>
@@ -477,7 +474,7 @@ function intro() {
         ${roleBlock(lesson)}
         ${renderMissions(lesson)}
       </div>
-      ${dock("학습 시작하기", "words")}
+      ${dock("학습 후 대화하기", "expressions", `<button class="secondary" data-act="start">바로 대화하기</button>`)}
     </section>
   `;
 }
@@ -487,7 +484,8 @@ function wordView() {
   return `
     <section class="screen learn-screen">
       ${topbar("오늘의 단어", { back: true })}
-      ${progress(2)}
+      <p class="learn-subtitle">오늘의 대화 핵심 단어예요.</p>
+      ${progress(3)}
       <div class="learn-list">
         ${lesson.words.map((w, index) => `
           <article class="learn-card">
@@ -507,7 +505,7 @@ function wordView() {
           </article>
         `).join("")}
       </div>
-      ${dock("오늘의 표현 배우기", "expressions")}
+      ${dock("오늘의 대화 보기", "ready")}
     </section>
   `;
 }
@@ -517,7 +515,8 @@ function exprView() {
   return `
     <section class="screen learn-screen">
       ${topbar("오늘의 표현", { back: true })}
-      ${progress(3)}
+      <p class="learn-subtitle">오늘의 미션 핵심 표현이에요.</p>
+      ${progress(2)}
       <div class="today-expression-list">
         ${lesson.expressions.map((item, patternIndex) => `
           <article class="pattern-card">
@@ -544,7 +543,7 @@ function exprView() {
           </article>
         `).join("")}
       </div>
-      ${dock("오늘의 대화", "ready")}
+      ${dock("오늘의 단어 보기", "words")}
     </section>
   `;
 }
@@ -566,17 +565,95 @@ function ready() {
   return `
     <section class="screen ready-screen">
       ${topbar("오늘의 대화", { back: true })}
+      <p class="ready-subtitle">오늘 배운 표현과 단어를 사용해 미션을 완료해 보세요.</p>
       ${progress(5)}
-      <h2>이제 직접 말해 보세요</h2>
-      <p class="sub">틀려도 괜찮아요. AI가 대화를 이어갈게요.</p>
-      <div class="white-card">
-        ${roleBlock(lesson)}
+      <h2 class="ready-prompt">틀려도 괜찮아요. 편하게 말해 보세요.</h2>
+      <div class="white-card reminder-mission-card">
         ${renderMissions(lesson)}
       </div>
-      <div class="tip"><b>💡 말이 떠오르지 않나요?</b><br>힌트를 누르면 바로 말할 수 있는 쉬운 답변 두 개를 보여드려요.</div>
+      <div class="turn-guide">
+        <p>최소 10턴, 최대 20턴까지 대화해요.</p>
+        <p>미션을 완료하면 마무리하거나 더 연습할 수 있어요.</p>
+      </div>
       ${dock("대화 시작하기", "start")}
     </section>
   `;
+}
+
+const conversationRules = {
+  minTurns: 10,
+  maxTurns: 20,
+  wrapUpNoticeTurn: 18,
+};
+
+const extensionAiPrompts = [
+  ["Could you tell me a little more about what you want?", "원하는 내용을 조금 더 말해 줄 수 있나요?"],
+  ["That helps. Is there anything else I should know?", "좋아요. 제가 더 알아야 할 것이 있을까요?"],
+  ["How would you like the final result to look?", "마지막 결과가 어떻게 보이면 좋겠나요?"],
+  ["Would you prefer something simple or a bit more detailed?", "간단한 쪽이 좋으세요, 아니면 조금 더 자세한 쪽이 좋으세요?"],
+  ["Can you give me one more detail?", "한 가지 더 자세히 말해 줄 수 있나요?"],
+  ["That sounds clear. What is most important to you?", "잘 이해했어요. 가장 중요한 점은 무엇인가요?"],
+  ["Let me check one more thing before we finish.", "마무리하기 전에 한 가지만 더 확인할게요."],
+  ["좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요."],
+  ["오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요."],
+];
+
+function aiPromptForTurn(index) {
+  const base = activeLesson().turns.filter((turn) => turn.speaker === "ai")[index];
+  if (base) return base;
+  if (index >= conversationRules.maxTurns) return { speaker: "ai", text: extensionAiPrompts.at(-1)[0], ko: extensionAiPrompts.at(-1)[1] };
+  if (index >= conversationRules.wrapUpNoticeTurn) return { speaker: "ai", text: extensionAiPrompts.at(-2)[0], ko: extensionAiPrompts.at(-2)[1] };
+  const prompt = extensionAiPrompts[(index - 4 + extensionAiPrompts.length) % (extensionAiPrompts.length - 2)];
+  return { speaker: "ai", text: prompt[0], ko: prompt[1] };
+}
+
+function learnerTurnForIndex(index) {
+  const base = activeLesson().turns.filter((turn) => turn.speaker === "me")[index];
+  return {
+    speaker: "me",
+    text: S.typedTurns[index] || base?.text || "Let me explain a little more.",
+    status: base?.status || "perfect",
+    meIndex: index,
+  };
+}
+
+function conversationTurnList() {
+  const list = [];
+  const aiLimit = S.finalizingConversation ? S.turn - 1 : S.turn;
+  for (let index = 0; index <= aiLimit; index += 1) {
+    list.push(aiPromptForTurn(index));
+    if (S.turn > index) list.push(learnerTurnForIndex(index));
+  }
+  if (S.finalizingConversation) {
+    list.push({
+      speaker: "ai",
+      text: "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.",
+      ko: "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.",
+    });
+  }
+  return list;
+}
+
+function shouldShowEndChoice() {
+  return S.mission >= activeLesson().missions.length
+    && S.turn >= conversationRules.minTurns
+    && !S.continueConversation
+    && !S.finalizingConversation;
+}
+
+function conversationGuidance() {
+  const missionsDone = S.mission >= activeLesson().missions.length;
+  if (S.finalizingConversation || shouldShowEndChoice()) return "";
+  if (S.turn >= conversationRules.wrapUpNoticeTurn) {
+    return "마무리 단계예요. 마지막 질문에 편하게 답해 보세요.";
+  }
+  if (S.continueConversation) {
+    return "조금 더 대화 중이에요. 언제든 리포트 보기로 마무리할 수 있어요.";
+  }
+  if (missionsDone) {
+    return "미션은 완료했어요. 조금 더 대화하며 표현을 연습해 볼게요.";
+  }
+  return "미션을 생각하며 편하게 답해 보세요.";
 }
 
 function turns(options = {}) {
@@ -584,24 +661,13 @@ function turns(options = {}) {
   const showUserFeedback = options.showUserFeedback !== false;
   const showRetry = options.showRetry !== false;
   const showAiTools = options.showAiTools !== false;
-  const list = [];
-  let meIndex = 0;
-  lesson.turns.forEach((turn) => {
-    if (turn.speaker === "ai") {
-      if (meIndex <= S.turn) list.push(turn);
-      return;
-    }
-    if (S.turn > meIndex) {
-      list.push({ ...turn, text: S.typedTurns[meIndex] || turn.text, meIndex });
-    }
-    meIndex += 1;
-  });
+  const list = options.fullConversation ? lesson.turns : conversationTurnList();
   return list.map((t, i) => `
     <div class="chat-row ${t.speaker}">
       <div class="bubble-line">
         ${t.speaker === "me" && showUserFeedback ? feedbackIcon(t.status, t.meIndex) : ""}
         <p>${escapeHtml(t.text)}</p>
-        ${t.speaker === "me" && showRetry ? `<button class="retry-turn-btn" data-act="retry-turn" data-turn="${i}" aria-label="다시 녹음">↻</button>` : ""}
+        ${t.speaker === "me" && showRetry ? `<button class="retry-turn-btn" data-act="retry-turn" data-turn="${t.meIndex}" aria-label="다시 녹음">↻</button>` : ""}
       </div>
       ${t.speaker === "me" && showUserFeedback && S.feedbackOpen === t.meIndex ? feedbackPanel(t.status) : ""}
       ${t.speaker === "ai" && showAiTools ? `<div class="chat-tools"><button data-speak="${t.text}">🔊</button><button data-translation="l${i}">🌐</button></div><em id="translation-l${i}" class="translation hidden">${t.ko}</em>` : ""}
@@ -609,7 +675,7 @@ function turns(options = {}) {
   `).join("");
 }
 
-function feedbackIcon(status, meIndex) {
+function feedbackIcon(status, meIndex, interactive = true) {
   const labels = {
     perfect: "완벽한 문장",
     better: "더 좋은 표현 제안",
@@ -620,7 +686,7 @@ function feedbackIcon(status, meIndex) {
     better: "🫴",
     correction: "!",
   };
-  if (status === "perfect") {
+  if (status === "perfect" || !interactive) {
     return `<span class="feedback-icon ${status}" aria-label="${labels[status]}">${symbols[status]}</span>`;
   }
   return `<button class="feedback-icon ${status}" data-act="feedback" data-feedback="${meIndex}" aria-label="${labels[status]}">${symbols[status]}</button>`;
@@ -639,7 +705,7 @@ function feedbackPanel(status) {
 }
 
 function currentAiPrompt() {
-  const prompt = activeLesson().turns.filter((turn) => turn.speaker === "ai")[S.turn];
+  const prompt = aiPromptForTurn(S.turn);
   return [prompt?.text || "", prompt?.ko || ""];
 }
 
@@ -672,29 +738,62 @@ function keyboardComposer() {
   `;
 }
 
+function endChoicePanel() {
+  if (!shouldShowEndChoice()) return "";
+  return `
+    <div class="end-choice-panel">
+      <p>미션을 모두 완료했어요!<br>마무리할까요 아니면 대화를 좀 더 할까요?</p>
+      <button class="primary" data-act="finish">마무리하고 리포트 보기</button>
+      <button class="secondary" data-act="continue-talk">조금 더 대화하기</button>
+    </div>
+  `;
+}
+
+function liveInputControls() {
+  if (S.finalizingConversation) return "";
+  if (shouldShowEndChoice()) return endChoicePanel();
+  return `
+    <div class="input ${S.keyboard ? "typing" : ""}">
+      ${keyboardComposer()}
+      <button class="keyboard-btn" data-act="keyboard" aria-label="키보드 입력">⌨️</button>
+      <button class="mic-main-btn" data-act="mic" aria-label="마이크로 말하기">🎙️</button>
+      <button class="hint-icon-btn" data-act="hint" aria-label="힌트 보기">💡</button>
+    </div>
+  `;
+}
+
+function exitConfirmSheet() {
+  if (!S.exitConfirm) return "";
+  return `
+    <div class="backdrop" data-act="close-exit-confirm">
+      <div class="sheet exit-confirm-sheet" data-stop>
+        <div class="handle"></div>
+        <h2>대화를 여기까지 할까요?</h2>
+        <button class="secondary" data-act="close-exit-confirm">계속하기</button>
+        <button class="primary" data-act="finish">리포트 보기</button>
+      </div>
+    </div>
+  `;
+}
+
 function live() {
   const lesson = activeLesson();
-  const totalMissions = lesson.missions.length;
   return `
     <section class="screen live-screen ${S.keyboard ? "typing-mode" : ""}">
-      ${topbar("오늘의 대화", { back: true })}
+      ${topbar("대화하기", { back: true, align: "left", right: `<button class="icon-btn close-live-btn" data-act="exit-confirm" aria-label="대화 종료">×</button>` })}
       <div class="live-mission-panel">
-        <div class="mission-count">오늘의 미션 <b>${S.mission}/${totalMissions} 완료</b></div>
-        <div class="mission-bar"><i style="width:${(S.mission / totalMissions) * 100}%"></i></div>
+        <div class="conversation-context"><span>상황: ${escapeHtml(lesson.title)}</span></div>
         <div class="live-mission-list">
           ${lesson.missions.map((mission, index) => `
             <p class="${S.mission > index ? "done" : ""}"><span>${S.mission > index ? "✓" : index + 1}</span> ${mission}</p>
           `).join("")}
         </div>
+        ${conversationGuidance() ? `<p class="conversation-guidance">${conversationGuidance()}</p>` : ""}
       </div>
       <div class="chat live-chat">${turns()}</div>
-      <div class="input ${S.keyboard ? "typing" : ""}">
-        ${keyboardComposer()}
-        <button class="keyboard-btn" data-act="keyboard" aria-label="키보드 입력">⌨️</button>
-        <button class="mic-main-btn" data-act="mic" aria-label="마이크로 말하기">🎙️</button>
-        <button class="hint-icon-btn" data-act="hint" aria-label="힌트 보기">💡</button>
-      </div>
+      ${liveInputControls()}
       ${hintSheet()}
+      ${exitConfirmSheet()}
     </section>
   `;
 }
@@ -710,9 +809,9 @@ function report() {
         <div class="metric-card"><small>대화 시간</small><b>${lesson.report.time}</b></div>
         <div class="metric-card"><small>미션 평가</small><b>${lesson.missions.length}/${lesson.missions.length}</b></div>
       </div>
-      <button class="menu-row" data-report-detail="corrections">교정 문장 <b>1개</b><span>›</span></button>
-      <button class="menu-row" data-report-detail="better">더 좋은 표현 문장 <b>0개</b><span>›</span></button>
-      <button class="menu-row" data-report-detail="conversation">전체 대화 내용 보기 <span>›</span></button>
+      <button class="menu-row" data-report-detail="corrections">교정 문장 보기 <b>1개</b><span>›</span></button>
+      <button class="menu-row" data-report-detail="better">더 좋은 표현 보기 <b>1개</b><span>›</span></button>
+      <button class="menu-row" data-report-detail="conversation">전체 대화 보기 <span>›</span></button>
       <div class="feedback-card">
         <b>AI 피드백</b>
         <p>${lesson.report.feedback}</p>
@@ -722,35 +821,78 @@ function report() {
   `;
 }
 
+function learnerFeedbackTurns(status) {
+  const lesson = activeLesson();
+  const matches = [];
+  let previousAi = null;
+  let meIndex = 0;
+  for (const turn of lesson.turns) {
+    if (turn.speaker === "ai") {
+      previousAi = turn;
+      continue;
+    }
+    if (turn.status === status) {
+      matches.push({
+        ai: previousAi,
+        me: { ...turn, text: S.typedTurns[meIndex] || turn.text, meIndex },
+      });
+    }
+    meIndex += 1;
+  }
+  return matches;
+}
+
+function reportFeedbackThreadList(status) {
+  const items = learnerFeedbackTurns(status);
+  const feedback = activeLesson().feedback[status];
+  if (!items.length || !feedback) {
+    return `
+      <article class="detail-card empty-detail">
+        <b>0개</b>
+        <p>이번 대화에서는 해당하는 피드백이 없었어요.</p>
+      </article>
+    `;
+  }
+  return `
+    <div class="chat report-chat feedback-thread-list">
+      ${items.map(({ ai, me }, index) => `
+        ${ai ? `
+          <div class="chat-row ai">
+            <div class="bubble-line">
+              <p>${escapeHtml(ai.text)}</p>
+            </div>
+            <div class="chat-tools"><button data-speak="${ai.text}">🔊</button><button data-translation="rf${status}${index}">🌐</button></div>
+            <em id="translation-rf${status}${index}" class="translation hidden">${ai.ko}</em>
+          </div>
+        ` : ""}
+        <div class="chat-row me report-feedback-row">
+          <div class="bubble-line">
+            ${feedbackIcon(status, me.meIndex, false)}
+            <p>${escapeHtml(me.text)}</p>
+          </div>
+          ${feedbackPanel(status)}
+        </div>
+      `).join("")}
+    </div>
+  `;
+}
+
 function reportDetail() {
   const lesson = activeLesson();
   const data = {
     corrections: {
       title: "교정 문장",
-      body: `
-        <article class="detail-card">
-          <small>내가 말한 문장</small>
-          <p class="wrong-sentence">${escapeHtml(lesson.report.correctionWrong)}</p>
-          <small>교정 문장</small>
-          <p class="correct-sentence">${escapeHtml(lesson.report.correctionRight)}</p>
-          <div class="detail-note">${lesson.report.correctionNote}</div>
-        </article>
-      `,
+      body: reportFeedbackThreadList("correction"),
     },
     better: {
-      title: "더 좋은 표현 문장",
-      body: `
-        <article class="detail-card empty-detail">
-          <b>0개</b>
-          <p>이번 대화에서는 문법과 상황이 맞으면서 별도로 더 자연스러운 표현을 제안할 문장이 없었어요.</p>
-        </article>
-      `,
+      title: "더 좋은 표현",
+      body: reportFeedbackThreadList("better"),
     },
     conversation: {
-      title: "전체 대화 내용",
+      title: "전체 대화",
       body: `
         <div class="chat report-chat">
-          ${turns({ showUserFeedback: false, showRetry: false, showAiTools: false })}
+          ${turns({ showUserFeedback: false, showRetry: false, showAiTools: true })}
         </div>
       `,
     },
@@ -787,12 +929,27 @@ function submitUserTurn(text = "") {
   if (S.turn >= 3) S.mission = activeLesson().missions.length;
   S.keyboard = false;
   S.feedbackOpen = null;
-  if (S.turn > 3) go("report");
-  else render();
+  if (S.turn >= conversationRules.maxTurns) {
+    S.finalizingConversation = true;
+    render();
+    setTimeout(() => go("report"), 1200);
+    return;
+  }
+  render();
+}
+
+function missionCountForTurn(turn) {
+  if (turn >= 3) return activeLesson().missions.length;
+  if (turn >= 1) return 1;
+  return 0;
 }
 
 function back() {
-  const map = { onboardingSpeed: "onboardingLevel", free: "home", intro: "home", words: "intro", expressions: "words", ready: "expressions", live: "ready", profile: "home", reportDetail: "report" };
+  const map = { onboardingSpeed: "onboardingLevel", free: "home", intro: "home", expressions: "intro", words: "expressions", ready: "words", live: "ready", profile: "home", reportDetail: "report" };
+  if (S.screen === "live" && S.liveEntry === "direct") {
+    go("intro");
+    return;
+  }
   go(map[S.screen] || "home");
 }
 
@@ -928,12 +1085,19 @@ app.addEventListener("click", (e) => {
     S.mission = 0;
     S.typedTurns = [];
     S.feedbackOpen = null;
+    S.continueConversation = false;
+    S.finalizingConversation = false;
+    S.exitConfirm = false;
     notify("입력한 내용으로 학습을 만들었어요.");
     setTimeout(() => go("intro"), 500);
   } else if (action === "start") {
+    S.liveEntry = S.screen === "intro" ? "direct" : "flow";
     S.turn = 0;
     S.mission = 0;
     S.typedTurns = [];
+    S.continueConversation = false;
+    S.finalizingConversation = false;
+    S.exitConfirm = false;
     go("live");
   } else if (action === "mic") {
     submitUserTurn();
@@ -952,15 +1116,17 @@ app.addEventListener("click", (e) => {
     S.feedbackOpen = S.feedbackOpen === next ? null : next;
     render();
   } else if (action === "retry-turn") {
-    const meRowsBeforeButton = [...document.querySelectorAll(".retry-turn-btn")].indexOf(e.target.closest(".retry-turn-btn"));
-    if (meRowsBeforeButton >= 0) {
-      S.turn = meRowsBeforeButton;
-      S.typedTurns = S.typedTurns.slice(0, meRowsBeforeButton);
-      S.mission = meRowsBeforeButton === 0 ? 0 : 1;
+    const retryIndex = Number(e.target.closest("[data-turn]")?.dataset.turn);
+    if (Number.isInteger(retryIndex) && retryIndex >= 0) {
+      S.turn = retryIndex;
+      S.typedTurns = S.typedTurns.slice(0, retryIndex);
+      S.mission = missionCountForTurn(retryIndex);
       S.feedbackOpen = null;
-      S.keyboard = true;
+      S.keyboard = false;
+      S.continueConversation = false;
+      S.finalizingConversation = false;
+      S.exitConfirm = false;
       render();
-      setTimeout(() => document.querySelector("#keyboard-text")?.focus(), 0);
     }
   } else if (action === "close-keyboard") {
     S.keyboard = false;
@@ -972,9 +1138,18 @@ app.addEventListener("click", (e) => {
       return;
     }
     submitUserTurn(value);
+  } else if (action === "continue-talk") {
+    S.continueConversation = true;
+    render();
+  } else if (action === "exit-confirm") {
+    S.exitConfirm = true;
+    render();
+  } else if (action === "close-exit-confirm") {
+    S.exitConfirm = false;
+    render();
   } else if (action === "finish") {
-    S.turn = 3;
-    S.mission = 2;
+    S.exitConfirm = false;
+    S.mission = activeLesson().missions.length;
     go("report");
   } else if (action === "speed") {
     const currentIndex = speedOptions.findIndex((item) => item.value === S.speed);
