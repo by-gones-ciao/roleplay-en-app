@@ -1,0 +1,355 @@
+[
+  {
+    "scenarioId": "hair_salon_trim_bangs_beginner",
+    "type": "preset",
+    "category": "daily",
+    "level": "beginner",
+    "title": "미용실에서 원하는 머리 설명하기",
+    "summary": "미용사에게 원하는 머리 길이와 앞머리 요청을 자연스럽게 말한다.",
+    "emoji": "✂️",
+    "userRole": "손님",
+    "aiRole": "미용사",
+    "missions": [
+      {
+        "missionId": "hair_mission_1",
+        "order": 1,
+        "text": "머리를 조금 다듬고 싶다고 말하기",
+        "successCriteria": ["trim", "hair", "a little"],
+        "recommendedExpressionIds": ["hair_expr_1", "hair_expr_2"]
+      },
+      {
+        "missionId": "hair_mission_2",
+        "order": 2,
+        "text": "앞머리를 특별히 신경 써 달라고 요청하기",
+        "successCriteria": ["bangs", "pay attention", "careful"],
+        "recommendedExpressionIds": ["hair_expr_3"]
+      }
+    ],
+    "expressions": [
+      {
+        "expressionId": "hair_expr_1",
+        "pattern": "I'd like to ...",
+        "meaning": "...하고 싶어요",
+        "missionIds": ["hair_mission_1"],
+        "examples": [
+          {
+            "fixed": "I'd like to",
+            "variable": "trim my hair a little.",
+            "ko": "머리를 조금 다듬고 싶어요."
+          }
+        ]
+      },
+      {
+        "expressionId": "hair_expr_2",
+        "pattern": "Just a little ...",
+        "meaning": "조금만 ...",
+        "missionIds": ["hair_mission_1"],
+        "examples": [
+          {
+            "fixed": "Just a little",
+            "variable": "trim, please.",
+            "ko": "조금만 다듬어 주세요."
+          }
+        ]
+      },
+      {
+        "expressionId": "hair_expr_3",
+        "pattern": "Please pay special attention to ...",
+        "meaning": "...을 특별히 신경 써 주세요",
+        "missionIds": ["hair_mission_2"],
+        "examples": [
+          {
+            "fixed": "Please pay special attention to",
+            "variable": "my bangs.",
+            "ko": "앞머리를 특별히 신경 써 주세요."
+          }
+        ]
+      }
+    ],
+    "words": [
+      { "wordId": "hair_word_1", "word": "trim", "meaning": "다듬다", "example": "I'd like a trim.", "ko": "머리를 다듬고 싶어요.", "focus": "trim", "missionIds": ["hair_mission_1"] },
+      { "wordId": "hair_word_2", "word": "hair", "meaning": "머리카락", "example": "Please trim my hair.", "ko": "제 머리를 다듬어 주세요.", "focus": "hair", "missionIds": ["hair_mission_1"] },
+      { "wordId": "hair_word_3", "word": "bangs", "meaning": "앞머리", "example": "Please trim my bangs.", "ko": "제 앞머리를 다듬어 주세요.", "focus": "bangs", "missionIds": ["hair_mission_2"] },
+      { "wordId": "hair_word_4", "word": "a little", "meaning": "조금", "example": "Just a little, please.", "ko": "조금만 해 주세요.", "focus": "a little", "missionIds": ["hair_mission_1"] },
+      { "wordId": "hair_word_5", "word": "eyebrows", "meaning": "눈썹", "example": "At the same level as my eyebrows.", "ko": "눈썹과 같은 높이로요.", "focus": "eyebrows", "missionIds": ["hair_mission_2"] }
+    ],
+    "turns": [
+      { "turnIndex": 1, "ai": { "text": "Hello! How can I help you today?", "ko": "안녕하세요. 오늘 어떻게 도와드릴까요?", "intent": "open_request" }, "expectedUser": { "text": "I'd like to trim my hair a little.", "status": "perfect", "missionIdsCompleted": ["hair_mission_1"], "feedbackId": null } },
+      { "turnIndex": 2, "ai": { "text": "Sure. How much would you like me to cut?", "ko": "네. 얼마나 자르고 싶으세요?", "intent": "ask_amount" }, "expectedUser": { "text": "Just a little, please.", "status": "better", "missionIdsCompleted": [], "feedbackId": "hair_feedback_better_1" } },
+      { "turnIndex": 3, "ai": { "text": "Okay. What about your bangs?", "ko": "좋아요. 앞머리는 어떻게 할까요?", "intent": "ask_bangs" }, "expectedUser": { "text": "At the same level my eyebrows.", "status": "correction", "missionIdsCompleted": [], "feedbackId": "hair_feedback_correction_1" } },
+      { "turnIndex": 4, "ai": { "text": "Got it. Should I be extra careful with your bangs?", "ko": "알겠습니다. 앞머리를 더 조심해서 봐 드릴까요?", "intent": "guide_mission_2" }, "expectedUser": { "text": "Yes, please pay special attention to my bangs.", "status": "perfect", "missionIdsCompleted": ["hair_mission_2"], "feedbackId": null } },
+      { "turnIndex": 5, "ai": { "text": "No problem. Do you want the rest of your hair layered?", "ko": "문제없어요. 나머지 머리는 층을 내길 원하시나요?", "intent": "additional_preference" }, "expectedUser": { "text": "No, just keep it simple, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 6, "ai": { "text": "Would you like the ends to look soft or straight?", "ko": "끝부분이 부드럽게 보이면 좋으세요, 아니면 일자로 보이면 좋으세요?", "intent": "additional_preference" }, "expectedUser": { "text": "Soft, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 7, "ai": { "text": "Do you usually style your hair in the morning?", "ko": "보통 아침에 머리를 손질하시나요?", "intent": "additional_preference" }, "expectedUser": { "text": "Yes, I style it every morning.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 8, "ai": { "text": "Should I make it easy to manage?", "ko": "관리하기 쉽게 해 드릴까요?", "intent": "additional_preference" }, "expectedUser": { "text": "Yes, easy to manage, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 9, "ai": { "text": "Is there any style you want to avoid?", "ko": "피하고 싶은 스타일이 있나요?", "intent": "additional_preference" }, "expectedUser": { "text": "I want to avoid anything too short.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 10, "ai": { "text": "Is this length okay for you?", "ko": "이 길이는 괜찮으세요?", "intent": "confirm_final" }, "expectedUser": { "text": "Yes, that looks good.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } }
+    ],
+    "extensionPrompts": [
+      { "turnIndex": 11, "text": "Would you like me to check your bangs once more?", "ko": "앞머리를 한 번 더 확인해 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 12, "text": "Do you want the sides a little shorter?", "ko": "옆머리는 조금 더 짧게 할까요?", "purpose": "additional_preference" },
+      { "turnIndex": 13, "text": "Would you like the back trimmed too?", "ko": "뒷머리도 다듬어 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 14, "text": "Do you want a natural look?", "ko": "자연스러운 느낌을 원하시나요?", "purpose": "additional_preference" },
+      { "turnIndex": 15, "text": "Should I keep the overall length?", "ko": "전체 길이는 유지할까요?", "purpose": "additional_preference" },
+      { "turnIndex": 16, "text": "Would you like me to dry your hair lightly?", "ko": "머리를 가볍게 말려 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 17, "text": "Is the style close to what you wanted?", "ko": "원하셨던 스타일에 가까운가요?", "purpose": "confirm_final" },
+      { "turnIndex": 18, "text": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "ko": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "purpose": "wrap_up_notice" },
+      { "turnIndex": 19, "text": "Is there anything else you want to adjust?", "ko": "더 조정하고 싶은 부분이 있나요?", "purpose": "final_check" },
+      { "turnIndex": 20, "text": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "ko": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "purpose": "final_close" }
+    ],
+    "feedbackRules": [
+      { "feedbackId": "hair_feedback_better_1", "status": "better", "trigger": "User says 'Just a little, please' when a more specific haircut request is better.", "userTextExample": "Just a little, please.", "suggestedText": "Just a little trim, please.", "koNote": "의미는 통하지만 더 원어민처럼 말할 수 있어요.", "relatedMissionIds": ["hair_mission_1"], "relatedExpressionIds": ["hair_expr_2"] },
+      { "feedbackId": "hair_feedback_correction_1", "status": "correction", "trigger": "User omits 'as' in 'same level as'.", "userTextExample": "At the same level my eyebrows.", "suggestedText": "At the same level as my eyebrows.", "koNote": "비교 기준을 말할 때는 as를 넣는 것이 자연스러워요.", "relatedMissionIds": ["hair_mission_2"], "relatedExpressionIds": [] }
+    ],
+    "reportCopy": {
+      "completeSummary": "오늘의 미션을 모두 완료했어요. 리포트에서 표현과 피드백을 확인해 보세요.",
+      "partialSummary": "아직 미션을 모두 완료하지 않았어요. 그래도 지금까지 말한 내용으로 리포트를 확인할 수 있어요.",
+      "completeFeedback": "오늘의 미션을 잘 완료했어요. 다음에는 pay special attention to를 한 덩어리 표현으로 기억해 보세요.",
+      "partialFeedbackTemplate": "현재 {completedMissions}/{totalMissions}개 미션을 완료했어요. 다음에는 남은 미션을 떠올리며 조금 더 이어서 말해 보세요."
+    }
+  },
+  {
+    "scenarioId": "clinic_symptoms_beginner",
+    "type": "preset",
+    "category": "medical",
+    "level": "beginner",
+    "title": "병원에서 증상 자세히 설명하기",
+    "summary": "의사에게 어디가 아픈지, 언제부터 증상이 있었는지 자세히 설명한다.",
+    "emoji": "🩺",
+    "userRole": "환자",
+    "aiRole": "의사",
+    "missions": [
+      { "missionId": "clinic_mission_1", "order": 1, "text": "어디가 아픈지 말하기", "successCriteria": ["fever", "body aches", "sick"], "recommendedExpressionIds": ["clinic_expr_1"] },
+      { "missionId": "clinic_mission_2", "order": 2, "text": "어젯밤부터 몸살과 열이 난다고 자세히 설명하기", "successCriteria": ["since last night", "have had", "fever", "body aches"], "recommendedExpressionIds": ["clinic_expr_2", "clinic_expr_3"] }
+    ],
+    "expressions": [
+      { "expressionId": "clinic_expr_1", "pattern": "I have ...", "meaning": "...이 있어요 / ...이 아파요", "missionIds": ["clinic_mission_1"], "examples": [{ "fixed": "I have", "variable": "a fever and body aches.", "ko": "열과 몸살이 있어요." }] },
+      { "expressionId": "clinic_expr_2", "pattern": "I've had ... since ...", "meaning": "...부터 계속 ...이 있어요", "missionIds": ["clinic_mission_2"], "examples": [{ "fixed": "I've had", "variable": "body aches and a fever since last night.", "ko": "어젯밤부터 몸살과 열이 있어요." }] },
+      { "expressionId": "clinic_expr_3", "pattern": "I also feel ...", "meaning": "또한 ...한 느낌이 들어요", "missionIds": ["clinic_mission_2"], "examples": [{ "fixed": "I also feel", "variable": "chills.", "ko": "오한도 느껴져요." }] }
+    ],
+    "words": [
+      { "wordId": "clinic_word_1", "word": "symptom", "meaning": "증상", "example": "What symptoms do you have?", "ko": "어떤 증상이 있으세요?", "focus": "symptoms", "missionIds": ["clinic_mission_1"] },
+      { "wordId": "clinic_word_2", "word": "fever", "meaning": "열", "example": "I have a fever.", "ko": "열이 나요.", "focus": "fever", "missionIds": ["clinic_mission_1", "clinic_mission_2"] },
+      { "wordId": "clinic_word_3", "word": "body aches", "meaning": "몸살, 몸이 쑤심", "example": "I have body aches.", "ko": "몸살이 있어요.", "focus": "body aches", "missionIds": ["clinic_mission_1", "clinic_mission_2"] },
+      { "wordId": "clinic_word_4", "word": "since", "meaning": "...부터", "example": "I've felt sick since last night.", "ko": "어젯밤부터 아팠어요.", "focus": "since", "missionIds": ["clinic_mission_2"] },
+      { "wordId": "clinic_word_5", "word": "temperature", "meaning": "체온", "example": "My temperature is high.", "ko": "체온이 높아요.", "focus": "temperature", "missionIds": [] }
+    ],
+    "turns": [
+      { "turnIndex": 1, "ai": { "text": "Hello. What seems to be the problem today?", "ko": "안녕하세요. 오늘 어디가 불편하신가요?", "intent": "open_request" }, "expectedUser": { "text": "I have a fever and body aches.", "status": "perfect", "missionIdsCompleted": ["clinic_mission_1"], "feedbackId": null } },
+      { "turnIndex": 2, "ai": { "text": "When did the symptoms start?", "ko": "증상은 언제부터 시작됐나요?", "intent": "ask_time" }, "expectedUser": { "text": "Since last night, I feel fever.", "status": "better", "missionIdsCompleted": [], "feedbackId": "clinic_feedback_better_1" } },
+      { "turnIndex": 3, "ai": { "text": "Can you describe your symptoms in more detail?", "ko": "증상을 조금 더 자세히 설명해 주시겠어요?", "intent": "ask_detail" }, "expectedUser": { "text": "I have body aches and a fever since last night.", "status": "correction", "missionIdsCompleted": [], "feedbackId": "clinic_feedback_correction_1" } },
+      { "turnIndex": 4, "ai": { "text": "Do you also have chills or a sore throat?", "ko": "오한이나 목 통증도 있나요?", "intent": "ask_related_symptoms" }, "expectedUser": { "text": "Yes, I also feel chills.", "status": "perfect", "missionIdsCompleted": ["clinic_mission_2"], "feedbackId": null } },
+      { "turnIndex": 5, "ai": { "text": "Have you checked your temperature?", "ko": "체온을 재 보셨나요?", "intent": "ask_temperature" }, "expectedUser": { "text": "Yes, my temperature is high.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 6, "ai": { "text": "Did you take any medicine?", "ko": "약을 드셨나요?", "intent": "ask_medicine" }, "expectedUser": { "text": "No, I haven't taken any medicine.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 7, "ai": { "text": "Do you have a cough?", "ko": "기침도 있나요?", "intent": "ask_related_symptoms" }, "expectedUser": { "text": "No, I don't have a cough.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 8, "ai": { "text": "Are you able to eat normally?", "ko": "평소처럼 식사는 가능하신가요?", "intent": "ask_condition" }, "expectedUser": { "text": "Not really. I don't feel hungry.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 9, "ai": { "text": "Do you feel dizzy?", "ko": "어지러움도 느끼시나요?", "intent": "ask_condition" }, "expectedUser": { "text": "A little, yes.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 10, "ai": { "text": "Have you had these symptoms before?", "ko": "이런 증상이 전에도 있었나요?", "intent": "ask_history" }, "expectedUser": { "text": "No, this is the first time.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } }
+    ],
+    "extensionPrompts": [
+      { "turnIndex": 11, "text": "Is the fever getting worse?", "ko": "열이 더 심해지고 있나요?", "purpose": "additional_symptom" },
+      { "turnIndex": 12, "text": "Do you need a note for work or school?", "ko": "직장이나 학교에 제출할 확인서가 필요하신가요?", "purpose": "practical_need" },
+      { "turnIndex": 13, "text": "Are you drinking enough water?", "ko": "물을 충분히 마시고 계신가요?", "purpose": "general_check" },
+      { "turnIndex": 14, "text": "Do you feel pain anywhere else?", "ko": "다른 곳도 아픈가요?", "purpose": "additional_symptom" },
+      { "turnIndex": 15, "text": "Did the symptoms start suddenly?", "ko": "증상이 갑자기 시작됐나요?", "purpose": "symptom_timing" },
+      { "turnIndex": 16, "text": "Is anyone around you sick too?", "ko": "주변에도 아픈 사람이 있나요?", "purpose": "context_check" },
+      { "turnIndex": 17, "text": "Is there anything else you want to tell me?", "ko": "그 밖에 말씀하고 싶은 증상이 있나요?", "purpose": "final_check" },
+      { "turnIndex": 18, "text": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "ko": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "purpose": "wrap_up_notice" },
+      { "turnIndex": 19, "text": "Do you have any allergies?", "ko": "알레르기가 있으신가요?", "purpose": "final_check" },
+      { "turnIndex": 20, "text": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "ko": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "purpose": "final_close" }
+    ],
+    "feedbackRules": [
+      { "feedbackId": "clinic_feedback_better_1", "status": "better", "trigger": "User says 'Since last night, I feel fever' instead of a natural current symptom expression.", "userTextExample": "Since last night, I feel fever.", "suggestedText": "I've had a fever since last night.", "koNote": "증상이 계속되는 상황에는 현재완료가 더 자연스러워요.", "relatedMissionIds": ["clinic_mission_2"], "relatedExpressionIds": ["clinic_expr_2"] },
+      { "feedbackId": "clinic_feedback_correction_1", "status": "correction", "trigger": "User combines 'since last night' with simple present for an ongoing symptom.", "userTextExample": "I have body aches and a fever since last night.", "suggestedText": "I've had body aches and a fever since last night.", "koNote": "어젯밤부터 지금까지 이어지는 증상이라 현재완료를 쓰는 것이 자연스러워요.", "relatedMissionIds": ["clinic_mission_2"], "relatedExpressionIds": ["clinic_expr_2"] }
+    ],
+    "reportCopy": {
+      "completeSummary": "오늘의 미션을 모두 완료했어요. 리포트에서 표현과 피드백을 확인해 보세요.",
+      "partialSummary": "아직 미션을 모두 완료하지 않았어요. 그래도 지금까지 말한 내용으로 리포트를 확인할 수 있어요.",
+      "completeFeedback": "증상과 시작 시점을 잘 설명했어요. 다음에는 I've had와 since last night를 함께 기억해 보세요.",
+      "partialFeedbackTemplate": "현재 {completedMissions}/{totalMissions}개 미션을 완료했어요. 다음에는 남은 증상 설명까지 이어서 말해 보세요."
+    }
+  },
+  {
+    "scenarioId": "restaurant_wrong_order_beginner",
+    "type": "preset",
+    "category": "daily",
+    "level": "beginner",
+    "title": "식당에서 주문이 잘못 나왔을 때 말하기",
+    "summary": "식당에서 내가 주문하지 않은 음식이 나왔을 때 상황을 설명하고 조치를 요청한다.",
+    "emoji": "🍽️",
+    "userRole": "손님",
+    "aiRole": "종업원",
+    "missions": [
+      { "missionId": "restaurant_mission_1", "order": 1, "text": "내가 주문한 음식이 아니라고 말하기", "successCriteria": ["not what I ordered", "wrong dish", "ordered"], "recommendedExpressionIds": ["restaurant_expr_1", "restaurant_expr_2"] },
+      { "missionId": "restaurant_mission_2", "order": 2, "text": "주문한 음식으로 바꿔 달라고 요청하기", "successCriteria": ["change", "pasta", "ordered dish"], "recommendedExpressionIds": ["restaurant_expr_3"] }
+    ],
+    "expressions": [
+      { "expressionId": "restaurant_expr_1", "pattern": "I ordered ...", "meaning": "저는 ...을 주문했어요", "missionIds": ["restaurant_mission_1"], "examples": [{ "fixed": "I ordered", "variable": "pasta.", "ko": "저는 파스타를 주문했어요." }] },
+      { "expressionId": "restaurant_expr_2", "pattern": "This isn't what I ordered.", "meaning": "이건 제가 주문한 것이 아니에요", "missionIds": ["restaurant_mission_1"], "examples": [{ "fixed": "This isn't", "variable": "what I ordered.", "ko": "이건 제가 주문한 것이 아니에요." }] },
+      { "expressionId": "restaurant_expr_3", "pattern": "Could you change it to ...?", "meaning": "...로 바꿔 주실 수 있나요?", "missionIds": ["restaurant_mission_2"], "examples": [{ "fixed": "Could you change it to", "variable": "pasta?", "ko": "파스타로 바꿔 주실 수 있나요?" }] }
+    ],
+    "words": [
+      { "wordId": "restaurant_word_1", "word": "order", "meaning": "주문하다", "example": "I ordered pasta.", "ko": "저는 파스타를 주문했어요.", "focus": "ordered", "missionIds": ["restaurant_mission_1"] },
+      { "wordId": "restaurant_word_2", "word": "dish", "meaning": "음식, 요리", "example": "This is the wrong dish.", "ko": "이건 잘못 나온 음식이에요.", "focus": "dish", "missionIds": ["restaurant_mission_1"] },
+      { "wordId": "restaurant_word_3", "word": "wrong", "meaning": "잘못된", "example": "This is the wrong order.", "ko": "이건 잘못된 주문이에요.", "focus": "wrong", "missionIds": ["restaurant_mission_1"] },
+      { "wordId": "restaurant_word_4", "word": "change", "meaning": "바꾸다", "example": "Could you change it?", "ko": "바꿔 주실 수 있나요?", "focus": "change", "missionIds": ["restaurant_mission_2"] },
+      { "wordId": "restaurant_word_5", "word": "receipt", "meaning": "영수증", "example": "Here is my receipt.", "ko": "여기 제 영수증이 있어요.", "focus": "receipt", "missionIds": [] }
+    ],
+    "turns": [
+      { "turnIndex": 1, "ai": { "text": "Hi. Is everything okay with your food?", "ko": "안녕하세요. 음식은 괜찮으신가요?", "intent": "open_request" }, "expectedUser": { "text": "This isn't what I ordered.", "status": "perfect", "missionIdsCompleted": ["restaurant_mission_1"], "feedbackId": null } },
+      { "turnIndex": 2, "ai": { "text": "I'm sorry about that. What did you order?", "ko": "죄송합니다. 무엇을 주문하셨나요?", "intent": "ask_order" }, "expectedUser": { "text": "I ordered pasta.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 3, "ai": { "text": "I see. Did you receive a different dish?", "ko": "알겠습니다. 다른 음식이 나온 건가요?", "intent": "confirm_problem" }, "expectedUser": { "text": "Yes, I got chicken instead.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 4, "ai": { "text": "Thank you for telling me. What would you like me to do?", "ko": "말씀해 주셔서 감사합니다. 어떻게 도와드릴까요?", "intent": "ask_resolution" }, "expectedUser": { "text": "Could you change it to pasta?", "status": "perfect", "missionIdsCompleted": ["restaurant_mission_2"], "feedbackId": null } },
+      { "turnIndex": 5, "ai": { "text": "Of course. Would you like to keep this dish while you wait?", "ko": "물론입니다. 기다리는 동안 이 음식은 그대로 두시겠어요?", "intent": "additional_preference" }, "expectedUser": { "text": "No, that's okay. Thank you.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 6, "ai": { "text": "Would you like anything while you wait?", "ko": "기다리시는 동안 필요한 것이 있으신가요?", "intent": "additional_preference" }, "expectedUser": { "text": "Just water, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 7, "ai": { "text": "Do you want me to check the order again?", "ko": "주문을 다시 확인해 드릴까요?", "intent": "confirm_problem" }, "expectedUser": { "text": "Yes, please check it again.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 8, "ai": { "text": "Should I bring a new receipt?", "ko": "새 영수증을 가져다 드릴까요?", "intent": "additional_preference" }, "expectedUser": { "text": "No, I don't need one.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 9, "ai": { "text": "Is this dish correct now?", "ko": "이제 음식이 맞게 나왔나요?", "intent": "confirm_final" }, "expectedUser": { "text": "Yes, this is correct.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 10, "ai": { "text": "Is everything okay now?", "ko": "이제 모두 괜찮으신가요?", "intent": "confirm_final" }, "expectedUser": { "text": "Yes, thank you for your help.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } }
+    ],
+    "extensionPrompts": [
+      { "turnIndex": 11, "text": "Would you like the same drink?", "ko": "같은 음료도 필요하신가요?", "purpose": "additional_preference" },
+      { "turnIndex": 12, "text": "Is there anything else wrong with the order?", "ko": "주문에서 또 잘못된 부분이 있나요?", "purpose": "confirm_problem" },
+      { "turnIndex": 13, "text": "Would you like to speak with the manager?", "ko": "매니저와 이야기하고 싶으신가요?", "purpose": "additional_preference" },
+      { "turnIndex": 14, "text": "Do you want this packed instead?", "ko": "이건 포장해 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 15, "text": "Should I remove this from the table?", "ko": "이 음식은 테이블에서 치워 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 16, "text": "Would you like to wait here?", "ko": "여기서 기다리시겠어요?", "purpose": "additional_preference" },
+      { "turnIndex": 17, "text": "Is the new dish okay?", "ko": "새로 나온 음식은 괜찮으신가요?", "purpose": "confirm_final" },
+      { "turnIndex": 18, "text": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "ko": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "purpose": "wrap_up_notice" },
+      { "turnIndex": 19, "text": "Is everything okay now?", "ko": "이제 모두 괜찮으신가요?", "purpose": "final_check" },
+      { "turnIndex": 20, "text": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "ko": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "purpose": "final_close" }
+    ],
+    "feedbackRules": [
+      { "feedbackId": "restaurant_feedback_better_1", "status": "better", "trigger": "User says 'I want pasta, not this' in a restaurant complaint context.", "userTextExample": "I want pasta, not this.", "suggestedText": "I ordered pasta, not this dish.", "koNote": "의미는 통하지만 더 공손하고 자연스럽게 말할 수 있어요.", "relatedMissionIds": ["restaurant_mission_1"], "relatedExpressionIds": ["restaurant_expr_1"] },
+      { "feedbackId": "restaurant_feedback_correction_1", "status": "correction", "trigger": "User says 'This is not my order food'.", "userTextExample": "This is not my order food.", "suggestedText": "This isn't what I ordered.", "koNote": "제가 주문한 것은 what I ordered로 말하는 것이 자연스러워요.", "relatedMissionIds": ["restaurant_mission_1"], "relatedExpressionIds": ["restaurant_expr_2"] }
+    ],
+    "reportCopy": {
+      "completeSummary": "오늘의 미션을 모두 완료했어요. 리포트에서 표현과 피드백을 확인해 보세요.",
+      "partialSummary": "아직 미션을 모두 완료하지 않았어요. 그래도 지금까지 말한 내용으로 리포트를 확인할 수 있어요.",
+      "completeFeedback": "주문이 잘못 나온 상황을 차분하게 설명했어요. 다음에는 This isn't what I ordered를 한 덩어리로 기억해 보세요.",
+      "partialFeedbackTemplate": "현재 {completedMissions}/{totalMissions}개 미션을 완료했어요. 다음에는 바꿔 달라는 요청까지 이어서 말해 보세요."
+    }
+  },
+  {
+    "scenarioId": "cafe_order_beginner",
+    "type": "preset",
+    "category": "daily",
+    "level": "starter",
+    "title": "카페에서 원하는 음료 주문하기",
+    "summary": "카페에서 원하는 음료, 사이즈, 옵션을 말한다.",
+    "emoji": "☕",
+    "userRole": "손님",
+    "aiRole": "바리스타",
+    "missions": [
+      { "missionId": "cafe_mission_1", "order": 1, "text": "원하는 음료를 주문하기", "successCriteria": ["iced latte", "latte", "coffee"], "recommendedExpressionIds": ["cafe_expr_1", "cafe_expr_2"] },
+      { "missionId": "cafe_mission_2", "order": 2, "text": "사이즈나 옵션을 말하기", "successCriteria": ["medium", "less sugar", "to go"], "recommendedExpressionIds": ["cafe_expr_3"] }
+    ],
+    "expressions": [
+      { "expressionId": "cafe_expr_1", "pattern": "I'd like ...", "meaning": "... 주세요 / ... 원해요", "missionIds": ["cafe_mission_1"], "examples": [{ "fixed": "I'd like", "variable": "an iced latte.", "ko": "아이스 라테 주세요." }] },
+      { "expressionId": "cafe_expr_2", "pattern": "Can I get ...?", "meaning": "... 받을 수 있을까요?", "missionIds": ["cafe_mission_1"], "examples": [{ "fixed": "Can I get", "variable": "an iced latte?", "ko": "아이스 라테 받을 수 있을까요?" }] },
+      { "expressionId": "cafe_expr_3", "pattern": "Make it ...", "meaning": "...로 해 주세요", "missionIds": ["cafe_mission_2"], "examples": [{ "fixed": "Make it", "variable": "medium, please.", "ko": "중간 사이즈로 해 주세요." }] }
+    ],
+    "words": [
+      { "wordId": "cafe_word_1", "word": "iced", "meaning": "차가운", "example": "I'd like an iced latte.", "ko": "아이스 라테 주세요.", "focus": "iced", "missionIds": ["cafe_mission_1"] },
+      { "wordId": "cafe_word_2", "word": "latte", "meaning": "라테", "example": "Can I get a latte?", "ko": "라테 받을 수 있을까요?", "focus": "latte", "missionIds": ["cafe_mission_1"] },
+      { "wordId": "cafe_word_3", "word": "medium", "meaning": "중간 사이즈", "example": "Medium, please.", "ko": "중간 사이즈로 주세요.", "focus": "medium", "missionIds": ["cafe_mission_2"] },
+      { "wordId": "cafe_word_4", "word": "less sugar", "meaning": "덜 달게", "example": "Less sugar, please.", "ko": "덜 달게 해 주세요.", "focus": "less sugar", "missionIds": ["cafe_mission_2"] },
+      { "wordId": "cafe_word_5", "word": "to go", "meaning": "포장", "example": "To go, please.", "ko": "포장해 주세요.", "focus": "to go", "missionIds": ["cafe_mission_2"] }
+    ],
+    "turns": [
+      { "turnIndex": 1, "ai": { "text": "Hi. What can I get for you?", "ko": "안녕하세요. 무엇을 드릴까요?", "intent": "open_request" }, "expectedUser": { "text": "I'd like an iced latte.", "status": "perfect", "missionIdsCompleted": ["cafe_mission_1"], "feedbackId": null } },
+      { "turnIndex": 2, "ai": { "text": "Sure. What size would you like?", "ko": "네. 어떤 사이즈로 드릴까요?", "intent": "ask_size" }, "expectedUser": { "text": "Medium, please.", "status": "perfect", "missionIdsCompleted": ["cafe_mission_2"], "feedbackId": null } },
+      { "turnIndex": 3, "ai": { "text": "Would you like it sweet?", "ko": "달게 해 드릴까요?", "intent": "ask_option" }, "expectedUser": { "text": "Less sugar, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 4, "ai": { "text": "Got it. Is that for here or to go?", "ko": "알겠습니다. 매장에서 드시나요, 포장인가요?", "intent": "ask_to_go" }, "expectedUser": { "text": "To go, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 5, "ai": { "text": "Great. Would you like anything else?", "ko": "좋아요. 더 필요한 건 있으신가요?", "intent": "additional_preference" }, "expectedUser": { "text": "No, that's all.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 6, "ai": { "text": "Would you like whipped cream?", "ko": "휘핑크림을 올려 드릴까요?", "intent": "ask_option" }, "expectedUser": { "text": "No whipped cream, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 7, "ai": { "text": "Do you want less ice?", "ko": "얼음을 적게 넣어 드릴까요?", "intent": "ask_option" }, "expectedUser": { "text": "Yes, less ice, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 8, "ai": { "text": "Would you like an extra shot?", "ko": "샷을 추가하시겠어요?", "intent": "ask_option" }, "expectedUser": { "text": "No, thank you.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 9, "ai": { "text": "Should I add your name to the cup?", "ko": "컵에 이름을 적어 드릴까요?", "intent": "ask_name" }, "expectedUser": { "text": "Yes, please write Mina.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 10, "ai": { "text": "Is this order correct?", "ko": "이 주문이 맞나요?", "intent": "confirm_final" }, "expectedUser": { "text": "Yes, that's correct.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } }
+    ],
+    "extensionPrompts": [
+      { "turnIndex": 11, "text": "Would you like to pay by card?", "ko": "카드로 결제하시겠어요?", "purpose": "payment" },
+      { "turnIndex": 12, "text": "Do you need a straw?", "ko": "빨대가 필요하신가요?", "purpose": "additional_preference" },
+      { "turnIndex": 13, "text": "Would you like a receipt?", "ko": "영수증이 필요하신가요?", "purpose": "payment" },
+      { "turnIndex": 14, "text": "Do you want a cup holder?", "ko": "컵 홀더가 필요하신가요?", "purpose": "additional_preference" },
+      { "turnIndex": 15, "text": "Should I make it extra hot?", "ko": "더 뜨겁게 해 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 16, "text": "Would you like anything for later?", "ko": "나중에 드실 것도 필요하신가요?", "purpose": "additional_preference" },
+      { "turnIndex": 17, "text": "Is the name on the cup correct?", "ko": "컵에 적힌 이름이 맞나요?", "purpose": "confirm_final" },
+      { "turnIndex": 18, "text": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "ko": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "purpose": "wrap_up_notice" },
+      { "turnIndex": 19, "text": "Is everything okay with your order?", "ko": "주문하신 내용이 모두 괜찮으신가요?", "purpose": "final_check" },
+      { "turnIndex": 20, "text": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "ko": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "purpose": "final_close" }
+    ],
+    "feedbackRules": [
+      { "feedbackId": "cafe_feedback_better_1", "status": "better", "trigger": "User says 'I want iced latte' in an ordering context.", "userTextExample": "I want iced latte.", "suggestedText": "I'd like an iced latte.", "koNote": "주문할 때는 I'd like를 쓰면 더 공손하고 자연스러워요.", "relatedMissionIds": ["cafe_mission_1"], "relatedExpressionIds": ["cafe_expr_1"] },
+      { "feedbackId": "cafe_feedback_correction_1", "status": "correction", "trigger": "User says 'Make medium it'.", "userTextExample": "Make medium it.", "suggestedText": "Make it medium, please.", "koNote": "make it 다음에 원하는 옵션을 말하는 어순이 자연스러워요.", "relatedMissionIds": ["cafe_mission_2"], "relatedExpressionIds": ["cafe_expr_3"] }
+    ],
+    "reportCopy": {
+      "completeSummary": "오늘의 미션을 모두 완료했어요. 리포트에서 표현과 피드백을 확인해 보세요.",
+      "partialSummary": "아직 미션을 모두 완료하지 않았어요. 그래도 지금까지 말한 내용으로 리포트를 확인할 수 있어요.",
+      "completeFeedback": "원하는 음료와 옵션을 잘 말했어요. 다음에는 I'd like와 Make it을 주문 표현으로 기억해 보세요.",
+      "partialFeedbackTemplate": "현재 {completedMissions}/{totalMissions}개 미션을 완료했어요. 다음에는 사이즈나 옵션까지 이어서 말해 보세요."
+    }
+  },
+  {
+    "scenarioId": "hotel_checkin_beginner",
+    "type": "preset",
+    "category": "travel",
+    "level": "beginner",
+    "title": "호텔 체크인 요청하기",
+    "summary": "호텔 프런트에서 예약자 이름을 말하고 체크인을 요청한다.",
+    "emoji": "🏨",
+    "userRole": "투숙객",
+    "aiRole": "호텔 직원",
+    "missions": [
+      { "missionId": "hotel_mission_1", "order": 1, "text": "체크인하고 싶다고 말하기", "successCriteria": ["check in"], "recommendedExpressionIds": ["hotel_expr_1"] },
+      { "missionId": "hotel_mission_2", "order": 2, "text": "예약자 이름을 말하기", "successCriteria": ["reservation", "under"], "recommendedExpressionIds": ["hotel_expr_2", "hotel_expr_3"] }
+    ],
+    "expressions": [
+      { "expressionId": "hotel_expr_1", "pattern": "I'd like to check in.", "meaning": "체크인하고 싶어요", "missionIds": ["hotel_mission_1"], "examples": [{ "fixed": "I'd like to", "variable": "check in.", "ko": "체크인하고 싶어요." }] },
+      { "expressionId": "hotel_expr_2", "pattern": "I have a reservation under ...", "meaning": "... 이름으로 예약했어요", "missionIds": ["hotel_mission_2"], "examples": [{ "fixed": "I have a reservation under", "variable": "Kim.", "ko": "Kim 이름으로 예약했어요." }] },
+      { "expressionId": "hotel_expr_3", "pattern": "Could you check my reservation?", "meaning": "제 예약을 확인해 주실 수 있나요?", "missionIds": ["hotel_mission_2"], "examples": [{ "fixed": "Could you check", "variable": "my reservation?", "ko": "제 예약을 확인해 주실 수 있나요?" }] }
+    ],
+    "words": [
+      { "wordId": "hotel_word_1", "word": "check in", "meaning": "체크인하다", "example": "I'd like to check in.", "ko": "체크인하고 싶어요.", "focus": "check in", "missionIds": ["hotel_mission_1"] },
+      { "wordId": "hotel_word_2", "word": "reservation", "meaning": "예약", "example": "I have a reservation.", "ko": "예약이 있어요.", "focus": "reservation", "missionIds": ["hotel_mission_2"] },
+      { "wordId": "hotel_word_3", "word": "passport", "meaning": "여권", "example": "Here is my passport.", "ko": "여기 제 여권입니다.", "focus": "passport", "missionIds": [] },
+      { "wordId": "hotel_word_4", "word": "room", "meaning": "방", "example": "I want a quiet room.", "ko": "조용한 방을 원해요.", "focus": "room", "missionIds": [] },
+      { "wordId": "hotel_word_5", "word": "key card", "meaning": "카드키", "example": "Here is your key card.", "ko": "여기 카드키입니다.", "focus": "key card", "missionIds": [] }
+    ],
+    "turns": [
+      { "turnIndex": 1, "ai": { "text": "Hello. Welcome to our hotel. How can I help you?", "ko": "안녕하세요. 저희 호텔에 오신 것을 환영합니다. 어떻게 도와드릴까요?", "intent": "open_request" }, "expectedUser": { "text": "I'd like to check in.", "status": "perfect", "missionIdsCompleted": ["hotel_mission_1"], "feedbackId": null } },
+      { "turnIndex": 2, "ai": { "text": "Of course. What name is the reservation under?", "ko": "물론입니다. 어느 이름으로 예약하셨나요?", "intent": "ask_reservation_name" }, "expectedUser": { "text": "I have a reservation under Kim.", "status": "perfect", "missionIdsCompleted": ["hotel_mission_2"], "feedbackId": null } },
+      { "turnIndex": 3, "ai": { "text": "Thank you. May I see your passport?", "ko": "감사합니다. 여권을 보여 주시겠어요?", "intent": "ask_passport" }, "expectedUser": { "text": "Yes, here it is.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 4, "ai": { "text": "Great. Would you prefer a quiet room?", "ko": "좋습니다. 조용한 방을 원하시나요?", "intent": "ask_room_preference" }, "expectedUser": { "text": "Yes, a quiet room, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 5, "ai": { "text": "Your room is ready. Do you need help with your bags?", "ko": "객실이 준비되었습니다. 짐 옮기는 것을 도와드릴까요?", "intent": "ask_bags" }, "expectedUser": { "text": "No, thank you.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 6, "ai": { "text": "Would you like breakfast included?", "ko": "조식을 포함하시겠어요?", "intent": "ask_breakfast" }, "expectedUser": { "text": "Yes, breakfast, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 7, "ai": { "text": "Do you need the Wi-Fi password?", "ko": "와이파이 비밀번호가 필요하신가요?", "intent": "ask_wifi" }, "expectedUser": { "text": "Yes, please.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 8, "ai": { "text": "Would you like a wake-up call?", "ko": "모닝콜을 원하시나요?", "intent": "ask_wakeup" }, "expectedUser": { "text": "No, I don't need one.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 9, "ai": { "text": "Would you like a late checkout?", "ko": "늦은 체크아웃을 원하시나요?", "intent": "ask_late_checkout" }, "expectedUser": { "text": "Yes, if possible.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } },
+      { "turnIndex": 10, "ai": { "text": "Is there anything else I can help you with?", "ko": "그 밖에 도와드릴 것이 있을까요?", "intent": "confirm_final" }, "expectedUser": { "text": "No, that's all. Thank you.", "status": "perfect", "missionIdsCompleted": [], "feedbackId": null } }
+    ],
+    "extensionPrompts": [
+      { "turnIndex": 11, "text": "Do you need directions to the elevator?", "ko": "엘리베이터 위치를 안내해 드릴까요?", "purpose": "additional_help" },
+      { "turnIndex": 12, "text": "Is the room number clear?", "ko": "객실 번호가 잘 보이시나요?", "purpose": "confirm_final" },
+      { "turnIndex": 13, "text": "Would you like a map of the area?", "ko": "주변 지도도 필요하신가요?", "purpose": "additional_help" },
+      { "turnIndex": 14, "text": "Do you need parking information?", "ko": "주차 안내가 필요하신가요?", "purpose": "additional_help" },
+      { "turnIndex": 15, "text": "Would you like extra towels?", "ko": "수건을 더 드릴까요?", "purpose": "additional_preference" },
+      { "turnIndex": 16, "text": "Do you need help with anything in the room?", "ko": "객실에서 필요한 것이 있으신가요?", "purpose": "additional_help" },
+      { "turnIndex": 17, "text": "Is everything clear before you go up?", "ko": "객실로 올라가기 전에 모두 이해되셨나요?", "purpose": "confirm_final" },
+      { "turnIndex": 18, "text": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "ko": "좋아요. 이제 마지막으로 하나만 더 확인해 볼게요.", "purpose": "wrap_up_notice" },
+      { "turnIndex": 19, "text": "Do you need anything else before check-in is complete?", "ko": "체크인을 마치기 전에 더 필요한 것이 있나요?", "purpose": "final_check" },
+      { "turnIndex": 20, "text": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "ko": "오늘은 여기까지 대화해요. 학습 리포트를 확인해 보세요.", "purpose": "final_close" }
+    ],
+    "feedbackRules": [
+      { "feedbackId": "hotel_feedback_better_1", "status": "better", "trigger": "User says 'I want check in'.", "userTextExample": "I want check in.", "suggestedText": "I'd like to check in.", "koNote": "호텔에서는 I'd like to check in이라고 말하면 더 공손해요.", "relatedMissionIds": ["hotel_mission_1"], "relatedExpressionIds": ["hotel_expr_1"] },
+      { "feedbackId": "hotel_feedback_correction_1", "status": "correction", "trigger": "User says 'My reservation is Kim name'.", "userTextExample": "My reservation is Kim name.", "suggestedText": "I have a reservation under Kim.", "koNote": "예약자 이름은 under를 사용해 말하는 것이 자연스러워요.", "relatedMissionIds": ["hotel_mission_2"], "relatedExpressionIds": ["hotel_expr_2"] }
+    ],
+    "reportCopy": {
+      "completeSummary": "오늘의 미션을 모두 완료했어요. 리포트에서 표현과 피드백을 확인해 보세요.",
+      "partialSummary": "아직 미션을 모두 완료하지 않았어요. 그래도 지금까지 말한 내용으로 리포트를 확인할 수 있어요.",
+      "completeFeedback": "체크인 요청과 예약자 이름을 잘 말했어요. 다음에는 reservation under를 한 덩어리로 기억해 보세요.",
+      "partialFeedbackTemplate": "현재 {completedMissions}/{totalMissions}개 미션을 완료했어요. 다음에는 예약자 이름까지 이어서 말해 보세요."
+    }
+  }
+]

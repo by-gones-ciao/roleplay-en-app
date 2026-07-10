@@ -1183,6 +1183,12 @@ button {
   background: transparent;
 }
 
+.home-top-btn {
+  color: var(--ink);
+  font-size: 20px;
+  font-weight: 900;
+}
+
 button.feedback-icon {
   cursor: pointer;
 }
@@ -1456,6 +1462,49 @@ button.feedback-icon {
   white-space: nowrap;
 }
 
+.conversation-progress {
+  margin: 0 0 12px;
+  padding: 9px 10px;
+  border: 1px solid #d7ebe5;
+  border-radius: 15px;
+  background: #f7fcf9;
+}
+
+.conversation-progress-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 7px;
+}
+
+.conversation-progress-head b {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.conversation-progress-head strong {
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.conversation-progress-track {
+  height: 6px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #dcebe5;
+}
+
+.conversation-progress-track span {
+  display: block;
+  width: var(--progress);
+  height: 100%;
+  border-radius: inherit;
+  background: var(--blue);
+}
+
 .live-mission-list {
   display: grid;
   gap: 7px;
@@ -1686,13 +1735,33 @@ button.feedback-icon {
 
 .report-title {
   margin-top: 22px !important;
-  margin-bottom: 18px !important;
+  margin-bottom: 10px !important;
   max-width: 100%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   font-size: 18px !important;
   letter-spacing: 0;
+}
+
+.report-state {
+  margin: 0 0 16px;
+  padding: 11px 13px;
+  border-radius: 16px;
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.45;
+}
+
+.report-state.complete {
+  background: #dff1ea;
+  border: 1px solid #c8efd9;
+}
+
+.report-state.partial {
+  background: #fff8d8;
+  border: 1px solid #f1d77e;
 }
 
 .report-metrics {
@@ -1952,7 +2021,7 @@ button.feedback-icon {
 .level-options {
   display: grid;
   gap: 20px;
-  margin-bottom: 36px;
+  margin-bottom: 20px;
 }
 
 .level-options button {
@@ -1977,6 +2046,137 @@ button.feedback-icon {
 .level-options button.active span {
   background: var(--purple);
   border-color: #dedde3;
+}
+
+.setting-options {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.setting-options button {
+  border: 1px solid #d7ebe5;
+  border-radius: 18px;
+  background: white;
+  padding: 13px 14px;
+  text-align: left;
+}
+
+.setting-options button.active {
+  border-color: var(--blue);
+  background: #e1f7ef;
+  box-shadow: inset 0 0 0 1px var(--blue);
+}
+
+.setting-options span {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 900;
+}
+
+.setting-options span small {
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.setting-options em {
+  display: block;
+  margin-top: 4px;
+  color: var(--muted);
+  font-size: 12px;
+  font-style: normal;
+  line-height: 1.45;
+}
+
+.setting-options.compact button {
+  padding: 12px 14px;
+}
+
+.alarm-preview {
+  margin: -4px 0 16px;
+  padding: 13px 14px;
+  border-radius: 20px;
+  background: #e1f7ef;
+  color: var(--ink);
+  font-size: 24px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.alarm-wheel-picker {
+  display: grid;
+  grid-template-columns: 0.95fr 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.alarm-wheel-column {
+  display: grid;
+  gap: 8px;
+}
+
+.alarm-wheel-column b {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 900;
+  text-align: center;
+}
+
+.alarm-wheel-frame {
+  position: relative;
+  height: 154px;
+  overflow: hidden;
+  border: 1px solid #d7ebe5;
+  border-radius: 24px;
+  background: linear-gradient(180deg, #f8fbf8 0%, #ffffff 36%, #ffffff 64%, #f8fbf8 100%);
+}
+
+.alarm-wheel-frame::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  left: 7px;
+  right: 7px;
+  top: 50%;
+  height: 38px;
+  border: 1px solid #bdebd8;
+  border-radius: 999px;
+  background: #e1f7ef;
+  transform: translateY(-50%);
+}
+
+.alarm-wheel {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  padding: 58px 4px;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.alarm-wheel::-webkit-scrollbar {
+  display: none;
+}
+
+.alarm-wheel button {
+  display: block;
+  width: 100%;
+  height: 38px;
+  border: 0;
+  background: transparent;
+  color: #78948c;
+  font-size: 13px;
+  font-weight: 900;
+  opacity: 0.46;
+}
+
+.alarm-wheel button.active {
+  color: var(--ink);
+  opacity: 1;
+  transform: scale(1.08);
 }
 
 .hint-choice {

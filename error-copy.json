@@ -1,0 +1,143 @@
+{
+  "common": {
+    "network_unstable": {
+      "message": "연결이 불안정해요. 잠시 후 다시 시도해 주세요.",
+      "actions": ["retry"]
+    },
+    "save_failed": {
+      "message": "저장하지 못했어요. 다시 시도해 주세요.",
+      "actions": ["retry"]
+    }
+  },
+  "microphone": {
+    "requesting": {
+      "message": "마이크 권한을 확인하고 있어요.",
+      "actions": []
+    },
+    "permission_denied": {
+      "message": "마이크 권한이 꺼져 있어요. 권한을 허용하거나 키보드로 입력해 주세요.",
+      "actions": ["retry", "open_keyboard"]
+    },
+    "permission_blocked": {
+      "message": "브라우저 설정에서 마이크 권한을 허용해 주세요.",
+      "actions": ["open_keyboard"]
+    }
+  },
+  "speech": {
+    "no_input": {
+      "message": "말소리가 잘 들리지 않았어요. 다시 말해 주세요.",
+      "actions": ["retry_voice", "open_keyboard"]
+    },
+    "too_short": {
+      "message": "조금만 더 길게 말해 주세요.",
+      "actions": ["retry_voice", "open_keyboard"]
+    },
+    "unclear": {
+      "message": "정확히 듣지 못했어요. 다시 말하거나 키보드로 입력해 주세요.",
+      "actions": ["retry_voice", "open_keyboard"]
+    },
+    "language_mismatch": {
+      "message": "영어로 한 문장 말해 주세요.",
+      "actions": ["retry_voice", "open_keyboard"]
+    },
+    "noise": {
+      "message": "주변 소리가 커서 잘 듣지 못했어요. 다시 말해 주세요.",
+      "actions": ["retry_voice", "open_keyboard"]
+    }
+  },
+  "keyboard": {
+    "empty_input": {
+      "message": "영어 문장을 입력해 주세요.",
+      "actions": []
+    },
+    "too_long": {
+      "message": "조금 더 짧게 입력해 주세요.",
+      "actions": []
+    },
+    "not_english": {
+      "message": "영어로 입력해 주세요.",
+      "actions": []
+    }
+  },
+  "ai": {
+    "next_failed": {
+      "message": "다음 질문을 가져오지 못했어요. 다시 시도해 주세요.",
+      "actions": ["retry", "view_report_if_available"]
+    },
+    "evaluation_failed": {
+      "message": "표현을 확인하지 못했어요. 다시 시도해 주세요.",
+      "actions": ["retry", "open_keyboard"]
+    },
+    "slow_response": {
+      "message": "응답이 조금 늦어지고 있어요. 다시 시도할 수 있어요.",
+      "actions": ["retry"]
+    }
+  },
+  "report": {
+    "generation_failed": {
+      "message": "학습 리포트를 만들지 못했어요. 다시 시도해 주세요.",
+      "actions": ["retry", "go_home"]
+    },
+    "no_corrections": {
+      "message": "이번 대화에서는 교정이 필요한 문장이 없었어요.",
+      "actions": []
+    },
+    "no_better_expressions": {
+      "message": "이번 대화에서는 더 좋은 표현 제안이 없었어요.",
+      "actions": []
+    }
+  },
+  "scenario": {
+    "missing_topic": {
+      "message": "상황이나 주제 설명을 입력해 주세요.",
+      "actions": []
+    },
+    "missing_user_role": {
+      "message": "나의 역할을 입력해 주세요.",
+      "actions": []
+    },
+    "missing_ai_role": {
+      "message": "AI의 역할을 입력해 주세요.",
+      "actions": []
+    },
+    "missing_required_fields": {
+      "message": "상황과 역할을 모두 입력해 주세요.",
+      "actions": []
+    },
+    "generation_failed": {
+      "message": "대화 시나리오를 만들지 못했어요. 다시 시도해 주세요.",
+      "actions": ["retry"]
+    }
+  },
+  "conversationExit": {
+    "zero_turn": {
+      "message": "아직 대화를 시작하지 않았어요. 나가시겠어요?",
+      "actions": ["continue_talk", "exit"]
+    },
+    "after_one_turn": {
+      "message": "대화를 여기까지 할까요?",
+      "actions": ["continue", "view_report"]
+    },
+    "mission_complete": {
+      "message": "미션을 모두 완료했어요!\n마무리할까요 아니면 대화를 좀 더 할까요?",
+      "actions": ["finish_and_view_report", "continue_more"]
+    }
+  },
+  "loading": {
+    "scenario_generation": "맞춤 대화를 만들고 있어요.",
+    "mic_permission": "마이크 권한을 확인하고 있어요.",
+    "speech_processing": "말한 내용을 확인하고 있어요.",
+    "evaluation": "표현을 확인하고 있어요.",
+    "ai_next": "다음 질문을 준비하고 있어요.",
+    "report_generation": "학습 리포트를 만들고 있어요.",
+    "settings_save": "설정을 저장하고 있어요."
+  },
+  "toast": {
+    "ai_recommendation_applied": "AI 추천 내용이 입력되었어요.",
+    "custom_scenario_created": "입력한 내용으로 학습을 만들었어요.",
+    "level_saved": "레벨이 변경되었어요.",
+    "speed_saved": "말하기 속도가 변경되었어요.",
+    "notification_saved": "알림 시간이 변경되었어요.",
+    "coming_soon": "이 기능은 곧 추가될 예정이에요."
+  }
+}

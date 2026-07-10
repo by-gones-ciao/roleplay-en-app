@@ -6,10 +6,16 @@ const S = {
   topic: "일상",
   level: "초급",
   tempLevel: "초급",
+  tempSpeed: "Normal (x1.0)",
+  tempNotificationPeriod: "오전",
+  tempNotificationHour: "9",
+  tempNotificationMinute: "00",
   levelSheet: false,
+  speedSheet: false,
+  notificationSheet: false,
   onboardingLevel: "초급",
   onboardingSpeed: "Normal (x1.0)",
-  reminder: true,
+  notificationTime: "오전 9:00",
   speed: "Normal (x1.0)",
   turn: 0,
   mission: 0,
@@ -201,7 +207,7 @@ function phoneStatus() {
 function topbar(title, options = {}) {
   const back = options.back ? `<button class="icon-btn" data-act="back" aria-label="뒤로">‹</button>` : `<span class="icon-space"></span>`;
   const alignClass = options.align === "left" ? " topbar-left" : "";
-  const right = options.right || `<span class="icon-space"></span>`;
+  const right = options.right || (options.home ? `<button class="icon-btn home-top-btn" data-act="home" aria-label="홈으로">⌂</button>` : `<span class="icon-space"></span>`);
   return `
     ${phoneStatus()}
     <header class="topbar${alignClass}">
@@ -387,6 +393,59 @@ function levelSheet() {
   `;
 }
 
+function speedSheet() {
+  if (!S.speedSheet) return "";
+  return `
+    <div class="backdrop" data-act="close-sheet">
+      <div class="sheet" data-stop>
+        <div class="handle"></div>
+        <h2>말하기 속도</h2>
+        <div class="setting-options">
+          ${speedOptions.map((item) => `
+            <button class="${S.tempSpeed === item.value ? "active" : ""}" data-select-speed="${item.value}">
+              <span>${item.label}<small>${item.value.match(/\(.+\)/)?.[0] || ""}</small></span>
+              <em>${item.desc}</em>
+            </button>
+          `).join("")}
+        </div>
+        <button class="primary" data-act="confirm-speed">확인</button>
+      </div>
+    </div>
+  `;
+}
+
+function notificationSheet() {
+  if (!S.notificationSheet) return "";
+  const periods = ["오전", "오후"];
+  const hours = Array.from({ length: 12 }, (_, i) => String(i + 1));
+  const minutes = Array.from({ length: 60 }, (_, i) => String(i).padStart(2, "0"));
+  const wheel = (label, values, activeValue, attr, suffix = "") => `
+    <div class="alarm-wheel-column">
+      <b>${label}</b>
+      <div class="alarm-wheel-frame">
+        <div class="alarm-wheel">
+          ${values.map((value) => `<button class="${activeValue === value ? "active" : ""}" ${attr}="${value}">${value}${suffix}</button>`).join("")}
+        </div>
+      </div>
+    </div>
+  `;
+  return `
+    <div class="backdrop" data-act="close-sheet">
+      <div class="sheet" data-stop>
+        <div class="handle"></div>
+        <h2>알림 시간</h2>
+        <div class="alarm-preview">${S.tempNotificationPeriod} ${S.tempNotificationHour}:${S.tempNotificationMinute}</div>
+        <div class="alarm-wheel-picker">
+          ${wheel("오전/오후", periods, S.tempNotificationPeriod, "data-temp-period")}
+          ${wheel("시간", hours, S.tempNotificationHour, "data-temp-hour", "시")}
+          ${wheel("분", minutes, S.tempNotificationMinute, "data-temp-minute", "분")}
+        </div>
+        <button class="primary" data-act="confirm-notification">확인</button>
+      </div>
+    </div>
+  `;
+}
+
 function profile() {
   return `
     <section class="screen profile-screen">
@@ -394,21 +453,22 @@ function profile() {
       <div class="profile-card">
         <div class="profile-avatar">☺</div>
         <h2>나의 학습 설정</h2>
-        <p>초급 학습자에게 맞춰 천천히, 안전하게 연습해요.</p>
       </div>
 
       <button class="setting-row" data-act="level-sheet">
-        <span>코스 선택</span><b>${S.level}</b>
+        <span>레벨 선택</span><b>${S.level}</b>
       </button>
-      <button class="setting-row" data-act="speed">
-        <span>속도 변경하기</span><b>${S.speed}</b>
+      <button class="setting-row" data-act="speed-sheet">
+        <span>말하기 속도</span><b>${S.speed}</b>
       </button>
-      <button class="setting-row" data-act="reminder">
-        <span>리마인더</span><b>${S.reminder ? "ON" : "OFF"}</b>
+      <button class="setting-row" data-act="notification-sheet">
+        <span>알림</span><b>${S.notificationTime}</b>
       </button>
 
       ${bottomNav("profile")}
       ${levelSheet()}
+      ${speedSheet()}
+      ${notificationSheet()}
     </section>
   `;
 }
@@ -416,7 +476,7 @@ function profile() {
 function freeView() {
   return `
     <section class="screen free-screen">
-      ${topbar("나만의 시나리오", { back: true })}
+      ${topbar("나만의 시나리오", { back: true, home: true })}
       <h2>원하는 대화를 만들어 보세요</h2>
       <p class="sub">상황과 역할을 입력하면 맞춤형 대화를 할 수 있어요.</p>
 
@@ -483,7 +543,7 @@ function wordView() {
   const lesson = activeLesson();
   return `
     <section class="screen learn-screen">
-      ${topbar("오늘의 단어", { back: true })}
+      ${topbar("오늘의 단어", { back: true, home: true })}
       <p class="learn-subtitle">오늘의 대화 핵심 단어예요.</p>
       ${progress(3)}
       <div class="learn-list">
@@ -514,7 +574,7 @@ function exprView() {
   const lesson = activeLesson();
   return `
     <section class="screen learn-screen">
-      ${topbar("오늘의 표현", { back: true })}
+      ${topbar("오늘의 표현", { back: true, home: true })}
       <p class="learn-subtitle">오늘의 미션 핵심 표현이에요.</p>
       ${progress(2)}
       <div class="today-expression-list">
@@ -564,7 +624,7 @@ function ready() {
   const lesson = activeLesson();
   return `
     <section class="screen ready-screen">
-      ${topbar("오늘의 대화", { back: true })}
+      ${topbar("오늘의 대화", { back: true, home: true })}
       <p class="ready-subtitle">오늘 배운 표현과 단어를 사용해 미션을 완료해 보세요.</p>
       ${progress(5)}
       <h2 class="ready-prompt">틀려도 괜찮아요. 편하게 말해 보세요.</h2>
@@ -653,7 +713,34 @@ function conversationGuidance() {
   if (missionsDone) {
     return "미션은 완료했어요. 조금 더 대화하며 표현을 연습해 볼게요.";
   }
-  return "미션을 생각하며 편하게 답해 보세요.";
+  return "";
+}
+
+function conversationProgress() {
+  const baseTurns = Math.min(S.turn, conversationRules.minTurns);
+  const basePercent = Math.min(100, (baseTurns / conversationRules.minTurns) * 100);
+  const isExtended = S.continueConversation && S.turn >= conversationRules.minTurns;
+  const current = isExtended ? Math.min(S.turn, conversationRules.maxTurns) : baseTurns;
+  const total = isExtended ? conversationRules.maxTurns : conversationRules.minTurns;
+  const percent = isExtended
+    ? Math.min(100, (current / conversationRules.maxTurns) * 100)
+    : basePercent;
+  let label = "대화 진행";
+
+  if (S.turn >= conversationRules.wrapUpNoticeTurn) label = "마무리 단계";
+  else if (isExtended) label = "더 연습 중";
+  else if (S.mission >= activeLesson().missions.length && S.turn >= conversationRules.minTurns) label = "마무리 가능";
+  else if (S.turn >= conversationRules.minTurns) label = "10턴 완료";
+
+  return `
+    <div class="conversation-progress" style="--progress:${percent}%">
+      <div class="conversation-progress-head">
+        <b>${label}</b>
+        <strong>${current}/${total}</strong>
+      </div>
+      <div class="conversation-progress-track" aria-hidden="true"><span></span></div>
+    </div>
+  `;
 }
 
 function turns(options = {}) {
@@ -764,13 +851,14 @@ function liveInputControls() {
 
 function exitConfirmSheet() {
   if (!S.exitConfirm) return "";
+  const hasSpoken = S.turn > 0;
   return `
     <div class="backdrop" data-act="close-exit-confirm">
       <div class="sheet exit-confirm-sheet" data-stop>
         <div class="handle"></div>
-        <h2>대화를 여기까지 할까요?</h2>
-        <button class="secondary" data-act="close-exit-confirm">계속하기</button>
-        <button class="primary" data-act="finish">리포트 보기</button>
+        <h2>${hasSpoken ? "대화를 여기까지 할까요?" : "아직 대화를 시작하지 않았어요. 나가시겠어요?"}</h2>
+        <button class="secondary" data-act="close-exit-confirm">${hasSpoken ? "계속하기" : "계속 대화하기"}</button>
+        <button class="primary" data-act="${hasSpoken ? "finish" : "exit-without-report"}">${hasSpoken ? "리포트 보기" : "나가기"}</button>
       </div>
     </div>
   `;
@@ -783,6 +871,7 @@ function live() {
       ${topbar("대화하기", { back: true, align: "left", right: `<button class="icon-btn close-live-btn" data-act="exit-confirm" aria-label="대화 종료">×</button>` })}
       <div class="live-mission-panel">
         <div class="conversation-context"><span>상황: ${escapeHtml(lesson.title)}</span></div>
+        ${conversationProgress()}
         <div class="live-mission-list">
           ${lesson.missions.map((mission, index) => `
             <p class="${S.mission > index ? "done" : ""}"><span>${S.mission > index ? "✓" : index + 1}</span> ${mission}</p>
@@ -800,21 +889,35 @@ function live() {
 
 function report() {
   const lesson = activeLesson();
+  const spokenTurns = Math.max(0, S.turn);
+  const completedMissions = Math.min(S.mission, lesson.missions.length);
+  const isComplete = completedMissions >= lesson.missions.length;
+  const reportSummary = isComplete
+    ? "오늘의 미션을 모두 완료했어요. 리포트에서 표현과 피드백을 확인해 보세요."
+    : "아직 미션을 모두 완료하지 않았어요. 그래도 지금까지 말한 내용으로 리포트를 확인할 수 있어요.";
+  const aiFeedback = isComplete
+    ? lesson.report.feedback
+    : `현재 ${completedMissions}/${lesson.missions.length}개 미션을 완료했어요. 다음에는 남은 미션을 떠올리며 조금 더 이어서 말해 보세요.`;
+  const spokenWords = spokenTurns > 0 ? `${Math.max(6, spokenTurns * 8)}개` : "0개";
+  const talkTime = spokenTurns > 0 ? `${Math.max(1, Math.ceil(spokenTurns * 0.6))}분 내외` : "0분";
+  const correctionCount = learnerFeedbackTurns("correction").length;
+  const betterCount = learnerFeedbackTurns("better").length;
   return `
     <section class="screen report-screen">
       ${topbar("학습 리포트")}
       <h2 class="report-title">${escapeHtml(lesson.title)}</h2>
+      <p class="report-state ${isComplete ? "complete" : "partial"}">${reportSummary}</p>
       <div class="report-metrics">
-        <div class="metric-card"><small>말한 단어</small><b>${lesson.report.words}</b></div>
-        <div class="metric-card"><small>대화 시간</small><b>${lesson.report.time}</b></div>
-        <div class="metric-card"><small>미션 평가</small><b>${lesson.missions.length}/${lesson.missions.length}</b></div>
+        <div class="metric-card"><small>말한 단어</small><b>${spokenWords}</b></div>
+        <div class="metric-card"><small>대화 시간</small><b>${talkTime}</b></div>
+        <div class="metric-card"><small>미션 평가</small><b>${completedMissions}/${lesson.missions.length}</b></div>
       </div>
-      <button class="menu-row" data-report-detail="corrections">교정 문장 보기 <b>1개</b><span>›</span></button>
-      <button class="menu-row" data-report-detail="better">더 좋은 표현 보기 <b>1개</b><span>›</span></button>
+      <button class="menu-row" data-report-detail="corrections">교정 문장 보기 <b>${correctionCount}개</b><span>›</span></button>
+      <button class="menu-row" data-report-detail="better">더 좋은 표현 보기 <b>${betterCount}개</b><span>›</span></button>
       <button class="menu-row" data-report-detail="conversation">전체 대화 보기 <span>›</span></button>
       <div class="feedback-card">
         <b>AI 피드백</b>
-        <p>${lesson.report.feedback}</p>
+        <p>${aiFeedback}</p>
       </div>
       ${dock("학습 완료", "home")}
     </section>
@@ -831,6 +934,7 @@ function learnerFeedbackTurns(status) {
       previousAi = turn;
       continue;
     }
+    if (meIndex >= S.turn) break;
     if (turn.status === status) {
       matches.push({
         ai: previousAi,
@@ -900,7 +1004,7 @@ function reportDetail() {
 
   return `
     <section class="screen report-screen">
-      ${topbar(data.title, { back: true })}
+      ${topbar(data.title, { back: true, home: true })}
       ${data.body}
     </section>
   `;
@@ -916,6 +1020,8 @@ function render() {
 function go(screen) {
   S.screen = screen;
   S.levelSheet = false;
+  S.speedSheet = false;
+  S.notificationSheet = false;
   S.hint = false;
   S.keyboard = false;
   render();
@@ -966,6 +1072,34 @@ app.addEventListener("click", (e) => {
   const tempLevel = e.target.closest("[data-temp-level]");
   if (tempLevel) {
     S.tempLevel = tempLevel.dataset.tempLevel;
+    render();
+    return;
+  }
+
+  const selectedSpeed = e.target.closest("[data-select-speed]");
+  if (selectedSpeed) {
+    S.tempSpeed = selectedSpeed.dataset.selectSpeed;
+    render();
+    return;
+  }
+
+  const selectedPeriod = e.target.closest("[data-temp-period]");
+  if (selectedPeriod) {
+    S.tempNotificationPeriod = selectedPeriod.dataset.tempPeriod;
+    render();
+    return;
+  }
+
+  const selectedHour = e.target.closest("[data-temp-hour]");
+  if (selectedHour) {
+    S.tempNotificationHour = selectedHour.dataset.tempHour;
+    render();
+    return;
+  }
+
+  const selectedMinute = e.target.closest("[data-temp-minute]");
+  if (selectedMinute) {
+    S.tempNotificationMinute = selectedMinute.dataset.tempMinute;
     render();
     return;
   }
@@ -1053,14 +1187,42 @@ app.addEventListener("click", (e) => {
   } else if (action === "level-sheet") {
     S.tempLevel = S.level;
     S.levelSheet = true;
+    S.speedSheet = false;
+    S.notificationSheet = false;
+    render();
+  } else if (action === "speed-sheet") {
+    S.tempSpeed = S.speed;
+    S.speedSheet = true;
+    S.levelSheet = false;
+    S.notificationSheet = false;
+    render();
+  } else if (action === "notification-sheet") {
+    const match = S.notificationTime.match(/(오전|오후) (\d+):(\d+)/);
+    S.tempNotificationPeriod = match?.[1] || "오전";
+    S.tempNotificationHour = match?.[2] || "9";
+    S.tempNotificationMinute = match?.[3] || "00";
+    S.notificationSheet = true;
+    S.levelSheet = false;
+    S.speedSheet = false;
     render();
   } else if (action === "confirm-level") {
     S.level = S.tempLevel;
     S.onboardingLevel = S.tempLevel;
     S.levelSheet = false;
     render();
+  } else if (action === "confirm-speed") {
+    S.speed = S.tempSpeed;
+    S.onboardingSpeed = S.tempSpeed;
+    S.speedSheet = false;
+    render();
+  } else if (action === "confirm-notification") {
+    S.notificationTime = `${S.tempNotificationPeriod} ${S.tempNotificationHour}:${S.tempNotificationMinute}`;
+    S.notificationSheet = false;
+    render();
   } else if (action === "close-sheet") {
     S.levelSheet = false;
+    S.speedSheet = false;
+    S.notificationSheet = false;
     render();
   } else if (action === "recommend") {
     document.querySelector("#custom-topic").value = "의사는 환자에게 어디가 아픈지 물어본다. 이에 환자는 어젯밤부터 몸살과 열이 나는 증상을 자세히 설명한다.";
@@ -1147,18 +1309,12 @@ app.addEventListener("click", (e) => {
   } else if (action === "close-exit-confirm") {
     S.exitConfirm = false;
     render();
+  } else if (action === "exit-without-report") {
+    S.exitConfirm = false;
+    back();
   } else if (action === "finish") {
     S.exitConfirm = false;
-    S.mission = activeLesson().missions.length;
     go("report");
-  } else if (action === "speed") {
-    const currentIndex = speedOptions.findIndex((item) => item.value === S.speed);
-    S.speed = speedOptions[(currentIndex + 1) % speedOptions.length].value;
-    S.onboardingSpeed = S.speed;
-    render();
-  } else if (action === "reminder") {
-    S.reminder = !S.reminder;
-    render();
   } else if (action === "soon") {
     notify("이 대화는 곧 추가될 예정이에요.");
   } else if (action === "back") back();
