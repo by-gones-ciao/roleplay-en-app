@@ -41,8 +41,8 @@
 | missions | Mission[] | 필수 | 오늘의 미션 |
 | expressions | Expression[] | 필수 | 오늘의 표현 |
 | words | Word[] | 필수 | 오늘의 단어 |
-| turns | Turn[] | 필수 | 기본 10턴 대화 |
-| extensionPrompts | ExtensionPrompt[] | 필수 | 11~20턴 확장 질문 |
+| turns | Turn[] | 필수 | 기본 5턴 대화 |
+| extensionPrompts | ExtensionPrompt[] | 필수 | 6~10턴 확장 질문 |
 | feedbackRules | FeedbackRule[] | 필수 | 발화 평가 기준 |
 | reportCopy | ReportCopy | 필수 | 리포트 문구 |
 
@@ -114,7 +114,13 @@
 
 ## 5. Turn
 
-기본 10턴 대화 데이터입니다. 여기서 1턴은 학습자 발화 1회를 의미합니다.
+기본 5턴 대화 데이터입니다. 여기서 1턴은 AI 발화 1회와 학습자 발화 1회를 합친 한 쌍을 의미합니다.
+
+예:
+
+- 1턴 = AI 질문/반응 1회 + 학습자 답변 1회
+- `turnIndex: 1`에는 첫 번째 AI 발화와 그에 대한 첫 번째 학습자 예상 답변이 함께 들어갑니다.
+- `turnCount`는 완료된 AI-학습자 대화 쌍의 개수를 의미합니다.
 
 ```json
 {
@@ -135,19 +141,19 @@
 
 ### 기준
 
-- 기본 대화는 최소 10턴을 가진다.
-- 10턴 안에 모든 미션을 완료할 수 있어야 한다.
+- 기본 대화는 최소 5턴, 즉 AI-학습자 대화 쌍 5개를 가진다.
+- 5턴 안에 모든 미션을 완료할 수 있어야 한다.
 - AI 질문은 너무 길지 않아야 한다.
 - 학습자 예상 답변은 perfect, better, correction을 섞어야 한다.
 - 학습자가 실제로 다른 답변을 하면 평가 프롬프트가 status와 feedback을 동적으로 생성한다.
 
 ## 6. ExtensionPrompt
 
-11~20턴 확장 대화용 질문입니다.
+6~10턴 확장 대화용 질문입니다.
 
 ```json
 {
-  "turnIndex": 11,
+  "turnIndex": 6,
   "text": "Would you like the ends to look soft or straight?",
   "ko": "끝부분이 부드럽게 보이면 좋으세요, 아니면 일자로 보이면 좋으세요?",
   "purpose": "additional_preference"
@@ -157,8 +163,8 @@
 ### 기준
 
 - 확장 질문은 미션 이후 추가 연습을 돕는다.
-- 18턴은 마무리 예고 성격이어야 한다.
-- 20턴은 리포트 이동 안내 문구여야 한다.
+- 9턴은 마무리 예고 성격이어야 한다.
+- 10턴은 리포트 이동 안내 문구여야 한다.
 
 ## 7. FeedbackRule
 
@@ -377,4 +383,3 @@
 5. 기본 시나리오 2개를 위 구조로 마이그레이션
 6. 나만의 시나리오 생성 프롬프트가 이 구조를 반환하도록 설계
 7. 학습자 발화 평가 프롬프트가 UserTurnResult를 반환하도록 설계
-

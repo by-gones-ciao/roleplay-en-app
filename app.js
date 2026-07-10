@@ -632,7 +632,7 @@ function ready() {
         ${renderMissions(lesson)}
       </div>
       <div class="turn-guide">
-        <p>최소 10턴, 최대 20턴까지 대화해요.</p>
+        <p>최소 5번, 최대 10번 답변해요.</p>
         <p>미션을 완료하면 마무리하거나 더 연습할 수 있어요.</p>
       </div>
       ${dock("대화 시작하기", "start")}
@@ -641,9 +641,9 @@ function ready() {
 }
 
 const conversationRules = {
-  minTurns: 10,
-  maxTurns: 20,
-  wrapUpNoticeTurn: 18,
+  minTurns: 5,
+  maxTurns: 10,
+  wrapUpNoticeTurn: 9,
 };
 
 const extensionAiPrompts = [
@@ -725,12 +725,12 @@ function conversationProgress() {
   const percent = isExtended
     ? Math.min(100, (current / conversationRules.maxTurns) * 100)
     : basePercent;
-  let label = "대화 진행";
+  let label = "답변 진행";
 
   if (S.turn >= conversationRules.wrapUpNoticeTurn) label = "마무리 단계";
   else if (isExtended) label = "더 연습 중";
   else if (S.mission >= activeLesson().missions.length && S.turn >= conversationRules.minTurns) label = "마무리 가능";
-  else if (S.turn >= conversationRules.minTurns) label = "10턴 완료";
+  else if (S.turn >= conversationRules.minTurns) label = "5번 완료";
 
   return `
     <div class="conversation-progress" style="--progress:${percent}%">

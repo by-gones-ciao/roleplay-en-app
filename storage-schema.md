@@ -105,6 +105,8 @@ conversation_sessions (
 )
 ```
 
+`turn_count`는 단일 메시지 개수가 아니라 완료된 AI-학습자 대화 쌍의 개수입니다. AI 발화만 있고 학습자 답변이 아직 없는 상태는 완료 턴으로 계산하지 않습니다.
+
 ### status 값
 
 - active
@@ -115,7 +117,7 @@ conversation_sessions (
 
 ## 6. conversation_turns
 
-AI 발화와 학습자 발화를 순서대로 저장합니다.
+AI 발화와 학습자 발화를 순서대로 저장합니다. 같은 `turn_index`를 가진 AI 발화 1개와 학습자 발화 1개가 하나의 턴을 이룹니다.
 
 ```sql
 conversation_turns (
@@ -261,4 +263,3 @@ create index idx_reports_user_created on reports(user_id, created_at desc);
 6. reports 저장
 7. user_settings 저장
 8. 로그인 후 사용자별 동기화
-

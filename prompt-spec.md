@@ -63,8 +63,9 @@ Rules:
 - Create 2 missions.
 - Create 2 or 3 expressions directly useful for the missions.
 - Create about 5 core words.
-- Create 10 base conversation turns.
-- Each turn means one learner response opportunity.
+- Create 5 base conversation turns.
+- One turn means one AI utterance plus one learner utterance as a pair.
+- `turnIndex` represents the pair number, not a single speaker message.
 - Design each AI turn using this structure:
   1. Optional context anchor: a short thought, opinion, confirmation, or situation statement.
   2. One learner-facing question.
@@ -76,8 +77,8 @@ Rules:
   1. Briefly acknowledge the learner.
   2. Bridge back to the scenario context.
   3. Ask one question related to the current mission or situation.
-- The 10 base turns must allow the learner to complete all missions.
-- Create extension prompts for turns 11 to 20.
+- The 5 base turns, meaning 5 AI-learner pairs, must allow the learner to complete all missions.
+- Create extension prompts for turns 6 to 10.
 - Include Korean translations for all AI utterances.
 - Include sample learner answers with status: perfect, better, or correction.
 - Include short feedback examples for better and correction.
@@ -129,7 +130,7 @@ Return the result using the Scenario structure from content-data-schema.md.
 - 미션이 실제 대화 중 말할 수 있는 행동인가?
 - 오늘의 표현이 미션과 직접 연결되는가?
 - 오늘의 단어가 대화에서 실제로 쓰이는가?
-- 10턴 안에 미션 완료가 가능한가?
+- 5턴 안에 미션 완료가 가능한가?
 - 한국어 설명이 너무 길지 않은가?
 
 ---
@@ -264,8 +265,8 @@ Return a UserTurnResult JSON.
   "userRole": "손님",
   "level": "beginner",
   "turnCount": 6,
-  "minTurns": 10,
-  "maxTurns": 20,
+  "minTurns": 5,
+  "maxTurns": 10,
   "completedMissionIds": ["mission_1"],
   "missions": [],
   "conversationHistory": []
@@ -300,8 +301,8 @@ Generate the response by following this process:
    - Bridge back to the scenario context.
    - Ask exactly one question connected to the current situation or incomplete mission.
 6. If a mission is incomplete, guide toward that mission naturally without saying "complete the mission."
-7. If turnCount is 18 or higher, move toward closing while still asking only one question.
-8. If turnCount is 20, use the final closing line and set shouldEnd to true.
+7. If turnCount is 9 or higher, move toward closing while still asking only one question.
+8. If turnCount is 10, use the final closing line and set shouldEnd to true.
 9. In medical scenarios, do not diagnose, prescribe, or provide professional advice.
 
 Self-check before returning:
@@ -343,8 +344,8 @@ AI 응답 생성 프롬프트는 먼저 intent를 고른 뒤 문장을 작성한
 | continue_context | 대화가 자연스럽게 이어지는 경우 | 짧은 반응 + 질문 1개 |
 | guide_incomplete_mission | 미션이 아직 완료되지 않은 경우 | 상황 확인 + 미션으로 유도하는 질문 1개 |
 | off_topic_redirect | 학습자가 주제에서 벗어난 경우 | 짧은 인정 + 상황 복귀 + 질문 1개 |
-| wrap_up_notice | 18턴 이후 마무리를 준비하는 경우 | 마무리 예고 + 마지막 확인 질문 1개 |
-| final_close | 20턴 종료 | 질문 없음, 리포트 안내 |
+| wrap_up_notice | 9턴 이후 마무리를 준비하는 경우 | 마무리 예고 + 마지막 확인 질문 1개 |
+| final_close | 10턴 종료 | 질문 없음, 리포트 안내 |
 
 ## 좋은 AI 턴 구조
 
@@ -396,7 +397,7 @@ Would you like me to check your bangs, and do you want the sides shorter?
 }
 ```
 
-## 18턴 이후 예시
+## 9턴 이후 예시
 
 ```json
 {
@@ -407,7 +408,7 @@ Would you like me to check your bangs, and do you want the sides shorter?
 }
 ```
 
-## 20턴 예시
+## 10턴 예시
 
 ```json
 {
@@ -450,7 +451,7 @@ Create a concise Korean learning report.
 Rules:
 - Reflect the learner's actual progress.
 - If turnCount is 0, a report should not be generated.
-- If turnCount is 1 to 9, use a light partial-report tone.
+- If turnCount is 1 to 4, use a light partial-report tone.
 - If all missions are complete, praise completion.
 - If missions are incomplete, encourage continuing next time.
 - Count correction, better, and perfect items from userTurnResults.
@@ -523,29 +524,29 @@ Return a Report JSON.
 3. 학습자 발화 평가 프롬프트를 연결한다.
 4. 평가 결과가 UserTurnResult 구조와 맞는지 검증한다.
 5. 대화 중 AI 응답 생성 프롬프트를 연결한다.
-6. 대화가 10~20턴 규칙을 지키는지 검증한다.
+6. 대화가 5~10턴 규칙을 지키는지 검증한다.
 7. 학습 리포트 생성 프롬프트를 연결한다.
-8. 0턴, 1~9턴, 10턴 이상, 미션 완료, 20턴 종료 케이스를 각각 테스트한다.
+8. 0턴, 1~4턴, 5턴 이상, 미션 완료, 10턴 종료 케이스를 각각 테스트한다.
 
 ## 필수 테스트 케이스
 
 1. 학습자가 아무 말도 하지 않고 X를 누른다.
    - 기대 결과: 리포트 없음, 직전 진입 화면으로 이동
 
-2. 학습자가 1턴만 말하고 리포트 보기로 종료한다.
+2. 완료 턴 1턴만 진행하고 리포트 보기로 종료한다.
    - 기대 결과: 짧은 리포트 제공
 
-3. 학습자가 미션을 완료했지만 10턴 미만이다.
+3. 학습자가 미션을 완료했지만 5턴 미만이다.
    - 기대 결과: 자동 종료 없음
 
-4. 학습자가 미션을 완료하고 10턴 이상이다.
+4. 학습자가 미션을 완료하고 5턴 이상이다.
    - 기대 결과: 마무리/더 대화 선택지 노출
 
 5. 학습자가 계속하기를 선택한다.
-   - 기대 결과: 최대 20턴까지 확장
+   - 기대 결과: 최대 10턴까지 확장
 
-6. 18턴에 도달한다.
+6. 9턴에 도달한다.
    - 기대 결과: 마무리 예고 발화
 
-7. 20턴에 도달한다.
+7. 10턴에 도달한다.
    - 기대 결과: 최종 발화 후 리포트 이동

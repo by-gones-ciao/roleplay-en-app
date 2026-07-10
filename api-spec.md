@@ -9,6 +9,8 @@
 - AI 관련 API는 서버에서 호출한다. 프론트엔드에 AI API 키를 노출하지 않는다.
 - 응답은 앱이 바로 렌더링할 수 있는 구조를 유지한다.
 - 의료 상황에서는 진단/처방을 생성하지 않는다.
+- 1턴은 AI 발화 1회와 학습자 발화 1회를 합친 한 쌍이다.
+- `turnCount`와 `turnIndex`는 단일 메시지 수가 아니라 AI-학습자 대화 쌍 기준이다.
 
 ## 2. 공통 응답 형식
 
@@ -207,8 +209,8 @@ POST /api/conversation/next
   "userRole": "손님",
   "level": "beginner",
   "turnCount": 6,
-  "minTurns": 10,
-  "maxTurns": 20,
+  "minTurns": 5,
+  "maxTurns": 10,
   "completedMissionIds": ["hair_mission_1"],
   "missions": [],
   "conversationHistory": []
@@ -220,7 +222,7 @@ POST /api/conversation/next
 - `prompt-spec.md`의 대화 중 AI 응답 생성 프롬프트를 사용한다.
 - AI는 한 턴에 질문 하나만 한다.
 - 주제 이탈 시 `intent = off_topic_redirect`를 사용할 수 있다.
-- 20턴에서는 `shouldEnd = true`를 반환한다.
+- 10턴에서는 `shouldEnd = true`를 반환한다.
 
 ### 응답
 
@@ -404,4 +406,3 @@ GET /api/reports/{reportId}
 | scenario_generation_failed | 502 | 시나리오 생성 실패 |
 | network_unstable | 503 | 네트워크 불안정 |
 | save_failed | 500 | 저장 실패 |
-
