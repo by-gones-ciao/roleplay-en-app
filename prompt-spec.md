@@ -130,7 +130,7 @@ Return the result using the Scenario structure from content-data-schema.md.
 - 미션이 실제 대화 중 말할 수 있는 행동인가?
 - 오늘의 표현이 미션과 직접 연결되는가?
 - 오늘의 단어가 대화에서 실제로 쓰이는가?
-- 5턴 안에 미션 완료가 가능한가?
+- 레벨별 최소 답변 수 안에 미션 완료가 가능한가?
 - 한국어 설명이 너무 길지 않은가?
 
 ---
@@ -169,6 +169,10 @@ Rules:
 - better: meaning is understandable, but the sentence can be improved with a more native-like expression, better sentence structure, clearer active/passive voice, more natural word choice, or smoother spoken phrasing.
 - correction: grammar, vocabulary, sentence structure, tense, articles, singular/plural forms, prepositions, word order, or key expression needs correction.
 - Do not over-correct minor spoken English if the sentence is natural enough.
+- Do not ignore grammar errors just because the level is starter or beginner.
+- For starter and beginner, correction must still be accurate, but the Korean explanation must be very short and easy.
+- Across all levels, evaluate sentence structure, tense, articles, subject-verb agreement, countability, singular/plural forms, vocabulary, and expressions accurately.
+- Prefer explaining the single most important issue instead of listing every issue.
 - For perfect, do not provide an explanation.
 - For better, provide a Korean note and one more native-like or structurally better English expression.
 - For correction, provide a Korean explanation and one corrected English sentence.
@@ -266,7 +270,7 @@ Return a UserTurnResult JSON.
   "level": "beginner",
   "turnCount": 6,
   "minTurns": 5,
-  "maxTurns": 10,
+  "maxTurns": 20,
   "completedMissionIds": ["mission_1"],
   "missions": [],
   "conversationHistory": []
@@ -301,8 +305,8 @@ Generate the response by following this process:
    - Bridge back to the scenario context.
    - Ask exactly one question connected to the current situation or incomplete mission.
 6. If a mission is incomplete, guide toward that mission naturally without saying "complete the mission."
-7. If turnCount is 9 or higher, move toward closing while still asking only one question.
-8. If turnCount is 10, use the final closing line and set shouldEnd to true.
+7. If turnCount reaches the level-specific wrap-up notice point, move toward closing while still asking only one question.
+8. If turnCount reaches the level-specific maxTurns, use the final closing line and set shouldEnd to true.
 9. In medical scenarios, do not diagnose, prescribe, or provide professional advice.
 
 Self-check before returning:
@@ -344,8 +348,8 @@ AI 응답 생성 프롬프트는 먼저 intent를 고른 뒤 문장을 작성한
 | continue_context | 대화가 자연스럽게 이어지는 경우 | 짧은 반응 + 질문 1개 |
 | guide_incomplete_mission | 미션이 아직 완료되지 않은 경우 | 상황 확인 + 미션으로 유도하는 질문 1개 |
 | off_topic_redirect | 학습자가 주제에서 벗어난 경우 | 짧은 인정 + 상황 복귀 + 질문 1개 |
-| wrap_up_notice | 9턴 이후 마무리를 준비하는 경우 | 마무리 예고 + 마지막 확인 질문 1개 |
-| final_close | 10턴 종료 | 질문 없음, 리포트 안내 |
+| wrap_up_notice | 레벨별 마무리 예고 시점 이후 | 마무리 예고 + 마지막 확인 질문 1개 |
+| final_close | 레벨별 최대 답변 수 도달 | 질문 없음, 리포트 안내 |
 
 ## 좋은 AI 턴 구조
 
@@ -397,7 +401,7 @@ Would you like me to check your bangs, and do you want the sides shorter?
 }
 ```
 
-## 9턴 이후 예시
+## 마무리 예고 예시
 
 ```json
 {
@@ -408,7 +412,7 @@ Would you like me to check your bangs, and do you want the sides shorter?
 }
 ```
 
-## 10턴 예시
+## 최종 종료 예시
 
 ```json
 {
@@ -451,7 +455,7 @@ Create a concise Korean learning report.
 Rules:
 - Reflect the learner's actual progress.
 - If turnCount is 0, a report should not be generated.
-- If turnCount is 1 to 4, use a light partial-report tone.
+- If turnCount is 1 or more but below minTurns, use a light partial-report tone.
 - If all missions are complete, praise completion.
 - If missions are incomplete, encourage continuing next time.
 - Count correction, better, and perfect items from userTurnResults.
@@ -524,9 +528,9 @@ Return a Report JSON.
 3. 학습자 발화 평가 프롬프트를 연결한다.
 4. 평가 결과가 UserTurnResult 구조와 맞는지 검증한다.
 5. 대화 중 AI 응답 생성 프롬프트를 연결한다.
-6. 대화가 5~10턴 규칙을 지키는지 검증한다.
+6. 대화가 레벨별 최소/최대 답변 수 규칙을 지키는지 검증한다.
 7. 학습 리포트 생성 프롬프트를 연결한다.
-8. 0턴, 1~4턴, 5턴 이상, 미션 완료, 10턴 종료 케이스를 각각 테스트한다.
+8. 0회 답변, 최소 답변 수 미만, 최소 답변 수 이상, 미션 완료, 레벨별 최대 답변 수 종료 케이스를 각각 테스트한다.
 
 ## 필수 테스트 케이스
 
@@ -536,17 +540,17 @@ Return a Report JSON.
 2. 완료 턴 1턴만 진행하고 리포트 보기로 종료한다.
    - 기대 결과: 짧은 리포트 제공
 
-3. 학습자가 미션을 완료했지만 5턴 미만이다.
+3. 학습자가 미션을 완료했지만 레벨별 최소 답변 수 미만이다.
    - 기대 결과: 자동 종료 없음
 
-4. 학습자가 미션을 완료하고 5턴 이상이다.
+4. 학습자가 미션을 완료하고 레벨별 최소 답변 수 이상이다.
    - 기대 결과: 마무리/더 대화 선택지 노출
 
 5. 학습자가 계속하기를 선택한다.
-   - 기대 결과: 최대 10턴까지 확장
+   - 기대 결과: 레벨별 최대 답변 수까지 확장
 
-6. 9턴에 도달한다.
+6. 레벨별 마무리 예고 시점에 도달한다.
    - 기대 결과: 마무리 예고 발화
 
-7. 10턴에 도달한다.
+7. 레벨별 최대 답변 수에 도달한다.
    - 기대 결과: 최종 발화 후 리포트 이동

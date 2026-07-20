@@ -210,7 +210,7 @@ POST /api/conversation/next
   "level": "beginner",
   "turnCount": 6,
   "minTurns": 5,
-  "maxTurns": 10,
+  "maxTurns": 20,
   "completedMissionIds": ["hair_mission_1"],
   "missions": [],
   "conversationHistory": []
@@ -222,7 +222,7 @@ POST /api/conversation/next
 - `prompt-spec.md`의 대화 중 AI 응답 생성 프롬프트를 사용한다.
 - AI는 한 턴에 질문 하나만 한다.
 - 주제 이탈 시 `intent = off_topic_redirect`를 사용할 수 있다.
-- 10턴에서는 `shouldEnd = true`를 반환한다.
+- 레벨별 최대 답변 수에서는 `shouldEnd = true`를 반환한다.
 
 ### 응답
 

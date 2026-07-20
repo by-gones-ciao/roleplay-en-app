@@ -9,10 +9,10 @@
 | 대화 상태 | 리포트 제공 | 리포트 유형 |
 |---|---|---|
 | 완료 턴 0턴 | 제공 안 함 | 없음 |
-| 완료 턴 1~4턴 | 제공 | 짧은 리포트 |
-| 완료 턴 5턴 이상 | 제공 | 일반 리포트 |
+| 최소 답변 수 미만 | 제공 | 짧은 리포트 |
+| 최소 답변 수 이상 | 제공 | 일반 리포트 |
 | 미션 모두 완료 | 제공 | 완료 리포트 |
-| 10턴 자동 종료 | 제공 | 진행 상태에 따른 리포트 |
+| 레벨별 최대 답변 수 자동 종료 | 제공 | 진행 상태에 따른 리포트 |
 
 ## 2. 리포트 데이터 입력값
 
@@ -303,7 +303,7 @@ completedMissionIds.length === missions.length
 조건:
 
 ```text
-turnCount >= 1 && turnCount < 10
+turnCount >= 1 && turnCount < minTurns
 ```
 
 문구:
@@ -317,7 +317,7 @@ turnCount >= 1 && turnCount < 10
 조건:
 
 ```text
-turnCount >= 10 && completedMissionIds.length < missions.length
+turnCount >= minTurns && completedMissionIds.length < missions.length
 ```
 
 문구:
@@ -370,7 +370,7 @@ AI 피드백은 아래 우선순위로 생성합니다.
 | reportType | 조건 |
 |---|---|
 | none | turnCount === 0 |
-| short | turnCount >= 1 && turnCount < 10 |
+| short | turnCount >= 1 && turnCount < minTurns |
 | partial | turnCount >= 10 && 미션 일부 또는 전체 미완료 |
 | complete | 미션 모두 완료 |
 
@@ -469,8 +469,8 @@ AI 피드백은 아래 우선순위로 생성합니다.
 ## 18. 품질 검수 체크리스트
 
 1. 0턴 종료 시 리포트가 생성되지 않는가?
-2. 1~9턴 종료 시 짧은 리포트가 생성되는가?
-3. 10턴 이상 미션 미완료 시 partial 리포트가 생성되는가?
+2. 최소 답변 수 미만 종료 시 짧은 리포트가 생성되는가?
+3. 최소 답변 수 이상 미션 미완료 시 partial 리포트가 생성되는가?
 4. 미션 완료 시 complete 리포트가 생성되는가?
 5. 말한 단어 수가 학습자 발화만 기준으로 계산되는가?
 6. AI 발화와 번역이 단어 수에 포함되지 않는가?
