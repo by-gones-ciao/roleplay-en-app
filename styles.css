@@ -411,39 +411,66 @@ button {
 
 .scenario-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  grid-template-columns: 1fr;
+  gap: 12px;
 }
 
 .topic-card {
-  min-height: 124px;
+  min-height: 104px;
   border: 1px solid #d8f0e4;
-  border-radius: 20px;
-  padding: 15px 12px;
+  border-radius: 18px;
+  padding: 15px 16px;
   background: linear-gradient(180deg, #fffdf8 0%, #fbf8ef 100%);
   text-align: left;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 18px;
+  align-items: center;
+  gap: 12px;
   box-shadow: var(--shadow);
 }
 
-.topic-card span {
+.topic-card .scenario-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 16px;
+  background: #e2f5ee;
+  display: grid;
+  place-items: center;
   font-size: 22px;
+}
+
+.scenario-copy {
+  display: grid;
+  gap: 5px;
+  min-width: 0;
 }
 
 .topic-card b {
   display: block;
-  font-size: 15px;
-  line-height: 1.38;
+  font-size: 16px;
+  line-height: 1.3;
   letter-spacing: 0;
   font-weight: 900;
 }
 
 .topic-card small {
-  color: var(--purple);
+  color: #5c776f;
   font-weight: 800;
   font-size: 11px;
+}
+
+.topic-card em {
+  color: #0f5d50;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 850;
+}
+
+.topic-card i {
+  color: #6b8f83;
+  font-size: 24px;
+  font-style: normal;
+  justify-self: end;
 }
 
 .empty-card {
@@ -1475,7 +1502,7 @@ button.feedback-icon {
   align-items: center;
   justify-content: space-between;
   gap: 10px;
-  margin-bottom: 7px;
+  margin-bottom: 4px;
 }
 
 .conversation-progress-head b {
@@ -1488,6 +1515,15 @@ button.feedback-icon {
   color: var(--ink);
   font-size: 12px;
   font-weight: 900;
+}
+
+.conversation-progress small {
+  display: block;
+  margin-bottom: 7px;
+  color: #5c776f;
+  font-size: 11px;
+  font-weight: 800;
+  line-height: 1.25;
 }
 
 .conversation-progress-track {

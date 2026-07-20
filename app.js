@@ -39,6 +39,13 @@ const S = {
 
 const topics = ["일상", "학업", "직업", "사회", "문화", "여행"];
 const levels = ["입문", "초급", "초중급", "중급", "고급"];
+const levelConversationRules = {
+  입문: { minAnswers: 5, maxAnswers: 10, wrapUpNoticeAnswer: 9 },
+  초급: { minAnswers: 5, maxAnswers: 20, wrapUpNoticeAnswer: 18 },
+  초중급: { minAnswers: 6, maxAnswers: 20, wrapUpNoticeAnswer: 18 },
+  중급: { minAnswers: 7, maxAnswers: 20, wrapUpNoticeAnswer: 18 },
+  고급: { minAnswers: 8, maxAnswers: 20, wrapUpNoticeAnswer: 18 },
+};
 const onboardingLevels = [
   { label: "Starter(입문)", value: "입문", desc: "아주 짧은 표현부터 차근차근 연습하고 싶어요." },
   { label: "Beginner(초급)", value: "초급", desc: "기초적인 짧은 문장은 말할 수 있어요. 회화 감각을 키우고 싶어요." },
@@ -276,6 +283,19 @@ function filteredScenarios() {
   });
 }
 
+function rulesForLevel(level) {
+  return levelConversationRules[level] || levelConversationRules["초급"];
+}
+
+function activeConversationLevel() {
+  return S.lessonMode === "custom" ? S.customLevel : S.level;
+}
+
+function answerRangeText(level) {
+  const rules = rulesForLevel(level);
+  return `최소 ${rules.minAnswers}번 · 최대 ${rules.maxAnswers}번 답변`;
+}
+
 function onboardingLevel() {
   return `
     <section class="screen onboarding-screen">
@@ -359,9 +379,12 @@ function home() {
       <div class="scenario-grid">
         ${cards.map((s) => `
           <button class="topic-card" data-act="${s.title.includes("미용실") ? "intro" : "soon"}">
-            <span>${s.emoji}</span>
-            <b>${s.title}</b>
-            <small>${s.level}</small>
+            <span class="scenario-icon">${s.emoji}</span>
+            <span class="scenario-copy">
+              <small>${s.topic} · ${s.level}</small>
+              <b>${s.title}</b>
+            </span>
+            <i>›</i>
           </button>
         `).join("")}
       </div>
@@ -622,6 +645,7 @@ function reportExpressionList() {
 
 function ready() {
   const lesson = activeLesson();
+  const rules = rulesForLevel(activeConversationLevel());
   return `
     <section class="screen ready-screen">
       ${topbar("오늘의 대화", { back: true, home: true })}
@@ -632,7 +656,7 @@ function ready() {
         ${renderMissions(lesson)}
       </div>
       <div class="turn-guide">
-        <p>최소 5번, 최대 10번 답변해요.</p>
+        <p>최소 ${rules.minAnswers}번, 최대 ${rules.maxAnswers}번 답변해요.</p>
         <p>미션을 완료하면 마무리하거나 더 연습할 수 있어요.</p>
       </div>
       ${dock("대화 시작하기", "start")}
@@ -641,9 +665,15 @@ function ready() {
 }
 
 const conversationRules = {
-  minTurns: 5,
-  maxTurns: 10,
-  wrapUpNoticeTurn: 9,
+  get minTurns() {
+    return rulesForLevel(activeConversationLevel()).minAnswers;
+  },
+  get maxTurns() {
+    return rulesForLevel(activeConversationLevel()).maxAnswers;
+  },
+  get wrapUpNoticeTurn() {
+    return rulesForLevel(activeConversationLevel()).wrapUpNoticeAnswer;
+  },
 };
 
 const extensionAiPrompts = [
@@ -730,7 +760,7 @@ function conversationProgress() {
   if (S.turn >= conversationRules.wrapUpNoticeTurn) label = "마무리 단계";
   else if (isExtended) label = "더 연습 중";
   else if (S.mission >= activeLesson().missions.length && S.turn >= conversationRules.minTurns) label = "마무리 가능";
-  else if (S.turn >= conversationRules.minTurns) label = "5번 완료";
+  else if (S.turn >= conversationRules.minTurns) label = `${conversationRules.minTurns}번 완료`;
 
   return `
     <div class="conversation-progress" style="--progress:${percent}%">
@@ -738,6 +768,7 @@ function conversationProgress() {
         <b>${label}</b>
         <strong>${current}/${total}</strong>
       </div>
+      <small>최소 ${conversationRules.minTurns}번 · 최대 ${conversationRules.maxTurns}번 답변</small>
       <div class="conversation-progress-track" aria-hidden="true"><span></span></div>
     </div>
   `;
