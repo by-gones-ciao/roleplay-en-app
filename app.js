@@ -365,12 +365,14 @@ function home() {
         <button class="level-select" data-act="level-sheet">레벨 선택 ▾</button>
       </section>
 
-      <div class="topic-tabs ${S.topicExpanded ? "expanded" : "collapsed"}">
-        ${visibleTopics.map((topic) => `
-          <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
-            ${topic}
-          </button>
-        `).join("")}
+      <div class="topic-picker ${S.topicExpanded ? "expanded" : "collapsed"}">
+        <div class="topic-tabs">
+          ${visibleTopics.map((topic) => `
+            <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
+              ${topic}
+            </button>
+          `).join("")}
+        </div>
         <button class="topic-toggle" data-act="toggle-topics" aria-label="${S.topicExpanded ? "카테고리 접기" : "카테고리 펼치기"}">
           ${S.topicExpanded ? "⌃" : "⌄"}
         </button>
