@@ -344,9 +344,17 @@ button {
   min-width: 0;
 }
 
-.topic-picker.collapsed .topic-tabs {
+.topic-picker > .topic-tabs:first-child {
   flex-wrap: nowrap;
   overflow: hidden;
+}
+
+.extra-topic-tabs {
+  margin-top: 8px;
+}
+
+.topic-picker.collapsed .extra-topic-tabs {
+  display: none;
 }
 
 .topic-tabs::-webkit-scrollbar {

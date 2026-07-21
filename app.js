@@ -344,7 +344,13 @@ function onboardingSpeed() {
 
 function home() {
   const cards = filteredScenarios();
-  const visibleTopics = S.topicExpanded ? topics : topics.slice(0, 4);
+  const primaryTopics = topics.slice(0, 4);
+  const extraTopics = topics.slice(4);
+  const topicButton = (topic) => `
+    <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
+      ${topic}
+    </button>
+  `;
   return `
     <section class="screen home-screen">
       ${phoneStatus()}
@@ -367,11 +373,10 @@ function home() {
 
       <div class="topic-picker ${S.topicExpanded ? "expanded" : "collapsed"}">
         <div class="topic-tabs">
-          ${visibleTopics.map((topic) => `
-            <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
-              ${topic}
-            </button>
-          `).join("")}
+          ${primaryTopics.map(topicButton).join("")}
+        </div>
+        <div class="topic-tabs extra-topic-tabs">
+          ${S.topicExpanded ? extraTopics.map(topicButton).join("") : ""}
         </div>
         <button class="topic-toggle" data-act="toggle-topics" aria-label="${S.topicExpanded ? "카테고리 접기" : "카테고리 펼치기"}">
           ${S.topicExpanded ? "⌃" : "⌄"}
