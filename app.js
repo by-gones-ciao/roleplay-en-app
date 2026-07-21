@@ -344,8 +344,8 @@ function onboardingSpeed() {
 
 function home() {
   const cards = filteredScenarios();
-  const primaryTopics = topics.slice(0, 4);
-  const extraTopics = topics.slice(4);
+  const primaryTopics = topics.slice(0, 5);
+  const extraTopics = topics.slice(5);
   const topicButton = (topic) => `
     <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
       ${topic}
