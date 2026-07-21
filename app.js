@@ -38,7 +38,7 @@ const S = {
   },
 };
 
-const topics = ["일상", "여행", "생활 서비스", "건강", "관계", "직업", "학업", "여가/문화", "사회/의견"];
+const topics = ["일상", "여행", "직업", "건강", "관계", "학업", "생활서비스", "여가/문화", "사회/의견"];
 const levels = ["입문", "초급", "초중급", "중급", "고급"];
 const levelConversationRules = {
   입문: { minAnswers: 5, maxAnswers: 10, wrapUpNoticeAnswer: 9 },
@@ -64,7 +64,7 @@ const speedOptions = [
 const scenarios = [
   { emoji: "✂️", topic: "일상", level: "초급", title: "미용실에서 원하는 머리 설명하기" },
   { emoji: "☕", topic: "일상", level: "초급", title: "카페에서 원하는 음료 주문하기" },
-  { emoji: "🛒", topic: "생활 서비스", level: "초급", title: "마트에서 필요한 물건 찾기" },
+  { emoji: "🛒", topic: "생활서비스", level: "초급", title: "마트에서 필요한 물건 찾기" },
   { emoji: "🛫", topic: "여행", level: "초급", title: "공항에서 탑승구 물어보기" },
   { emoji: "🏫", topic: "학업", level: "초급", title: "수업에서 과제 질문하기" },
   { emoji: "💼", topic: "직업", level: "초중급", title: "회의 시간을 다시 확인하기" },
