@@ -334,14 +334,19 @@ button {
 .topic-picker {
   position: relative;
   margin: 0 0 12px;
-  padding-right: 48px;
+  padding-right: 24px;
 }
 
 .topic-tabs {
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 8px;
   min-width: 0;
+}
+
+.topic-picker.collapsed .topic-tabs {
+  flex-wrap: nowrap;
+  overflow: hidden;
 }
 
 .topic-tabs::-webkit-scrollbar {
@@ -353,8 +358,8 @@ button {
   flex: 0 0 auto;
   border: 1px solid #d9efe4;
   border-radius: 999px;
-  min-height: 34px;
-  padding: 0 16px;
+  min-height: 32px;
+  padding: 0 12px;
   background: #fffdf8;
   color: #4e7665;
   font-weight: 800;
@@ -371,19 +376,18 @@ button {
 
 .topic-toggle {
   position: absolute;
-  top: 0;
+  top: 2px;
   right: 0;
-  width: 38px;
-  height: 38px;
-  min-height: 38px;
+  width: 18px;
+  height: 30px;
+  min-height: 30px;
   padding: 0;
-  border-radius: 999px;
-  border: 1.5px solid #111111;
-  background: #ffffff;
+  border: 0;
+  background: transparent;
   color: #111111;
   display: grid;
   place-items: center;
-  font-size: 25px;
+  font-size: 19px;
   font-weight: 900;
   line-height: 1;
   box-shadow: none;
