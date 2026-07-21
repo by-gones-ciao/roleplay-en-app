@@ -332,11 +332,10 @@ button {
 }
 
 .topic-tabs {
-  display: flex;
-  gap: 8px;
-  overflow-x: auto;
-  margin: 0 -22px 12px;
-  padding: 0 22px 3px;
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 9px;
+  margin: 0 0 12px;
 }
 
 .topic-tabs::-webkit-scrollbar {
@@ -345,22 +344,42 @@ button {
 }
 
 .topic-tabs button {
-  flex: 0 0 auto;
   border: 1px solid #d9efe4;
-  border-radius: 999px;
-  padding: 10px 16px;
+  border-radius: 18px;
+  min-height: 50px;
+  padding: 0 14px 0 16px;
   background: #fffdf8;
   color: #4e7665;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  text-align: left;
   font-weight: 800;
-  font-size: 13px;
+  font-size: 14px;
   box-shadow: 0 5px 12px rgba(20, 37, 29, 0.04);
 }
 
+.topic-tabs button span {
+  min-width: 0;
+}
+
+.topic-tabs button i {
+  color: #6b8f83;
+  font-size: 17px;
+  font-style: normal;
+  line-height: 1;
+}
+
 .topic-tabs button.active {
-  background: var(--mint);
+  background: #dff6ee;
   color: var(--ink);
   border-color: #72c7b1;
   box-shadow: 0 8px 18px rgba(0, 184, 148, 0.18);
+}
+
+.topic-tabs button.active i {
+  color: var(--ink);
 }
 
 .custom-scenario-card {

@@ -37,7 +37,7 @@ const S = {
   },
 };
 
-const topics = ["일상", "학업", "직업", "사회", "문화", "여행"];
+const topics = ["일상", "여행", "생활 서비스", "건강", "관계", "직업", "학업", "여가/문화", "사회/의견"];
 const levels = ["입문", "초급", "초중급", "중급", "고급"];
 const levelConversationRules = {
   입문: { minAnswers: 5, maxAnswers: 10, wrapUpNoticeAnswer: 9 },
@@ -63,12 +63,12 @@ const speedOptions = [
 const scenarios = [
   { emoji: "✂️", topic: "일상", level: "초급", title: "미용실에서 원하는 머리 설명하기" },
   { emoji: "☕", topic: "일상", level: "초급", title: "카페에서 원하는 음료 주문하기" },
-  { emoji: "🛒", topic: "일상", level: "초급", title: "마트에서 필요한 물건 찾기" },
-  { emoji: "🛫", topic: "일상", level: "초급", title: "공항에서 탑승구 물어보기" },
+  { emoji: "🛒", topic: "생활 서비스", level: "초급", title: "마트에서 필요한 물건 찾기" },
+  { emoji: "🛫", topic: "여행", level: "초급", title: "공항에서 탑승구 물어보기" },
   { emoji: "🏫", topic: "학업", level: "초급", title: "수업에서 과제 질문하기" },
   { emoji: "💼", topic: "직업", level: "초중급", title: "회의 시간을 다시 확인하기" },
-  { emoji: "🤝", topic: "사회", level: "중급", title: "처음 만난 사람과 가볍게 대화하기" },
-  { emoji: "🎭", topic: "문화", level: "중급", title: "공연장에서 좌석 위치 묻기" },
+  { emoji: "🤝", topic: "관계", level: "중급", title: "처음 만난 사람과 가볍게 대화하기" },
+  { emoji: "🎭", topic: "여가/문화", level: "중급", title: "공연장에서 좌석 위치 묻기" },
   { emoji: "✈️", topic: "여행", level: "초급", title: "호텔 체크인 요청하기" },
   { emoji: "🧳", topic: "여행", level: "입문", title: "공항에서 탑승구 물어보기" },
 ];
@@ -364,7 +364,12 @@ function home() {
       </section>
 
       <div class="topic-tabs">
-        ${topics.map((topic) => `<button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">${topic}</button>`).join("")}
+        ${topics.map((topic) => `
+          <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
+            <span>${topic}</span>
+            <i>▾</i>
+          </button>
+        `).join("")}
       </div>
 
       <button class="custom-scenario-card" data-act="free">
