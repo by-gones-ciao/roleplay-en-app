@@ -332,9 +332,10 @@ button {
 }
 
 .topic-tabs {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 9px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
   margin: 0 0 12px;
 }
 
@@ -344,42 +345,39 @@ button {
 }
 
 .topic-tabs button {
+  flex: 0 0 auto;
   border: 1px solid #d9efe4;
-  border-radius: 18px;
-  min-height: 50px;
-  padding: 0 14px 0 16px;
+  border-radius: 999px;
+  min-height: 34px;
+  padding: 0 16px;
   background: #fffdf8;
   color: #4e7665;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  text-align: left;
   font-weight: 800;
-  font-size: 14px;
+  font-size: 13px;
   box-shadow: 0 5px 12px rgba(20, 37, 29, 0.04);
 }
 
-.topic-tabs button span {
-  min-width: 0;
-}
-
-.topic-tabs button i {
-  color: #6b8f83;
-  font-size: 17px;
-  font-style: normal;
-  line-height: 1;
-}
-
 .topic-tabs button.active {
-  background: #dff6ee;
-  color: var(--ink);
-  border-color: #72c7b1;
-  box-shadow: 0 8px 18px rgba(0, 184, 148, 0.18);
+  background: #111111;
+  color: white;
+  border-color: #111111;
+  box-shadow: 0 8px 18px rgba(17, 17, 17, 0.12);
 }
 
-.topic-tabs button.active i {
-  color: var(--ink);
+.topic-tabs .topic-toggle {
+  width: 38px;
+  height: 38px;
+  min-height: 38px;
+  padding: 0;
+  border: 1.5px solid #111111;
+  background: #ffffff;
+  color: #111111;
+  display: grid;
+  place-items: center;
+  font-size: 25px;
+  font-weight: 900;
+  line-height: 1;
+  box-shadow: none;
 }
 
 .custom-scenario-card {

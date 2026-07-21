@@ -13,6 +13,7 @@ const S = {
   levelSheet: false,
   speedSheet: false,
   notificationSheet: false,
+  topicExpanded: false,
   onboardingLevel: "초급",
   onboardingSpeed: "Normal (x1.0)",
   notificationTime: "오전 9:00",
@@ -343,6 +344,7 @@ function onboardingSpeed() {
 
 function home() {
   const cards = filteredScenarios();
+  const visibleTopics = S.topicExpanded ? topics : topics.slice(0, 4);
   return `
     <section class="screen home-screen">
       ${phoneStatus()}
@@ -363,13 +365,15 @@ function home() {
         <button class="level-select" data-act="level-sheet">레벨 선택 ▾</button>
       </section>
 
-      <div class="topic-tabs">
-        ${topics.map((topic) => `
+      <div class="topic-tabs ${S.topicExpanded ? "expanded" : "collapsed"}">
+        ${visibleTopics.map((topic) => `
           <button class="${S.topic === topic ? "active" : ""}" data-topic="${topic}">
-            <span>${topic}</span>
-            <i>▾</i>
+            ${topic}
           </button>
         `).join("")}
+        <button class="topic-toggle" data-act="toggle-topics" aria-label="${S.topicExpanded ? "카테고리 접기" : "카테고리 펼치기"}">
+          ${S.topicExpanded ? "⌃" : "⌄"}
+        </button>
       </div>
 
       <button class="custom-scenario-card" data-act="free">
@@ -1202,6 +1206,10 @@ app.addEventListener("click", (e) => {
   if (!action) return;
 
   if (["home", "profile", "free", "words", "expressions", "ready"].includes(action)) go(action);
+  else if (action === "toggle-topics") {
+    S.topicExpanded = !S.topicExpanded;
+    render();
+  }
   else if (action === "next-onboarding") {
     go("onboardingSpeed");
   }
