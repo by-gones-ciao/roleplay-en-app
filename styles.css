@@ -350,6 +350,7 @@ button {
 }
 
 .extra-topic-tabs {
+  gap: 6px;
   margin-top: 8px;
 }
 
@@ -380,6 +381,11 @@ button {
   color: white;
   border-color: #111111;
   box-shadow: 0 8px 18px rgba(17, 17, 17, 0.12);
+}
+
+.extra-topic-tabs button {
+  padding: 0 9px;
+  font-size: 12px;
 }
 
 .topic-toggle {
